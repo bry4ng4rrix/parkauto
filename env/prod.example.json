@@ -1,0 +1,5 @@
+{
+  "APP_ENV": "PRODUCTION",
+  "API_BASE_URL": "https://api.parkauto.example",
+  "WS_BASE_URL": ""
+}

@@ -7,7 +7,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Parkauto</string>
+	<string>ParkAuto</string>
+	<key>NSCameraUsageDescription</key>
+	<string>L'appareil photo permet de joindre des photos à vos déclarations d'incident et à vos messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>La photothèque permet de joindre des photos à vos déclarations d'incident et à vos messages.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>ParkAuto se connecte au serveur de la flotte sur le réseau local.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

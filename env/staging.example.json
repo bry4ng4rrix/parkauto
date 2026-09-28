@@ -1,0 +1,5 @@
+{
+  "APP_ENV": "STAGING",
+  "API_BASE_URL": "https://recette.parkauto.example",
+  "WS_BASE_URL": ""
+}

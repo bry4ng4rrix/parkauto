@@ -11,6 +11,7 @@ import '../../notifications/data/notification_feed.dart';
 import '../../notifications/domain/app_notification.dart';
 import '../data/conversations_provider.dart';
 import '../domain/realtime_event.dart';
+import 'own_message.dart';
 import 'realtime.dart';
 import 'unread_counter.dart';
 
@@ -33,7 +34,7 @@ class MessageEventHandler {
   void handle(MessageRealtimeEvent event) {
     final message = event.message;
     final me = _ref.read(currentUserIdProvider);
-    final isMine = me != null && message.auteur.idUtilisateur == me;
+    final isMine = _ref.read(ownMessageMatcherProvider)(message);
     final foreground = _ref.read(appLifecycleProvider).isForeground;
     final isOpen =
         foreground &&

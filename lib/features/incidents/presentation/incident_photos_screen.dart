@@ -5,15 +5,16 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/api/api_image.dart';
 import '../../../core/domain/tone.dart';
+import '../../../core/media/photo_picker.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/feedback.dart';
 import '../../../core/widgets/inline_message.dart';
+import '../../../core/widgets/photo_viewer.dart';
 import '../../../core/widgets/skeleton.dart';
 import '../data/incidents_repository.dart';
 import '../domain/incident.dart';
 import 'incident_widgets.dart';
-import 'photo_picker.dart';
 import 'photo_selection.dart';
 import 'photo_upload_controller.dart';
 
@@ -40,7 +41,9 @@ class _IncidentPhotosScreenState extends ConsumerState<IncidentPhotosScreen> {
 
   /// Android : photo prise juste avant une fermeture de l'activité.
   Future<void> _recoverLostPhotos() async {
-    final result = await IncidentPhotoPicker().recoverLost();
+    final result = await PhotoPicker(
+      maxBytes: Incident.maxPhotoBytes,
+    ).recoverLost();
     if (!mounted || result.photos.isEmpty) return;
     setState(() {
       _selection = [

@@ -1,30 +1,32 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:parkauto/main.dart';
+import 'package:parkauto/core/utils/app_date_time.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('AppDateTime', () {
+    test('une date avec Z est un instant UTC', () {
+      final parsed = AppDateTime.parse('2026-09-28T07:06:12Z');
+      expect(parsed.isUtc, isTrue);
+      expect(parsed, DateTime.utc(2026, 9, 28, 7, 6, 12));
+    });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    test('une date sans fuseau est conservée telle quelle', () {
+      final parsed = AppDateTime.parse('2026-09-28T10:02:11');
+      expect(parsed.isUtc, isFalse);
+      expect(parsed.hour, 10);
+      expect(parsed.minute, 2);
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('fractions au-delà de la microseconde acceptées', () {
+      final parsed = AppDateTime.parse('2026-10-28T11:40:45.527310900Z');
+      expect(parsed.isUtc, isTrue);
+      expect(parsed.second, 45);
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('format API sans fuseau', () {
+      expect(
+        AppDateTime.toApi(DateTime(2026, 9, 28, 9, 30)),
+        '2026-09-28T09:30:00',
+      );
+    });
   });
 }

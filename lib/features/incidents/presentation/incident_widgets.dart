@@ -278,58 +278,6 @@ class UploadThumbnail extends StatelessWidget {
   }
 }
 
-/// Visionneuse plein écran (zoom).
-class PhotoViewer extends StatelessWidget {
-  const PhotoViewer({super.key, required this.image, this.caption});
-
-  final ImageProvider<Object> image;
-  final String? caption;
-
-  static Future<void> open(
-    BuildContext context, {
-    required ImageProvider<Object> image,
-    String? caption,
-  }) => Navigator.of(context, rootNavigator: true).push(
-    PageRouteBuilder<void>(
-      opaque: true,
-      transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (_, _, _) => PhotoViewer(image: image, caption: caption),
-      transitionsBuilder: (_, animation, _, child) =>
-          FadeTransition(opacity: animation, child: child),
-    ),
-  );
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Colors.black,
-    appBar: AppBar(
-      backgroundColor: Colors.black,
-      foregroundColor: Colors.white,
-      title: switch (caption) {
-        final text? => Text(text),
-        null => null,
-      },
-      titleTextStyle: Theme.of(
-        context,
-      ).textTheme.titleMedium?.copyWith(color: Colors.white),
-    ),
-    body: Center(
-      child: InteractiveViewer(
-        maxScale: 5,
-        child: Image(
-          image: image,
-          fit: BoxFit.contain,
-          errorBuilder: (_, _, _) => const Icon(
-            Icons.broken_image_outlined,
-            color: Colors.white54,
-            size: 48,
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
 /// Grille de vignettes adaptée à la largeur.
 class PhotoGrid extends StatelessWidget {
   const PhotoGrid({super.key, required this.children});

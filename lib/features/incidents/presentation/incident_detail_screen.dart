@@ -9,6 +9,7 @@ import '../../../core/api/api_image.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/inline_message.dart';
+import '../../../core/widgets/photo_viewer.dart';
 import '../../../core/widgets/resource_view.dart';
 import '../../../core/widgets/skeleton.dart';
 import '../../../core/widgets/state_views.dart';

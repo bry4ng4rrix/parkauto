@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/theme/app_spacing.dart';
+import '../../../core/media/photo_picker.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/feedback.dart';
 import '../domain/incident.dart';
 import 'incident_widgets.dart';
-import 'photo_picker.dart';
 
 /// Photo choisie, pas encore envoyée.
 @immutable
@@ -45,7 +45,7 @@ class PhotoSelection extends StatelessWidget {
   final bool enabled;
 
   Future<void> _pick(BuildContext context, ImageSource source) async {
-    final result = await IncidentPhotoPicker().pick(
+    final result = await PhotoPicker(maxBytes: Incident.maxPhotoBytes).pick(
       source: source,
       remaining: remaining,
     );
