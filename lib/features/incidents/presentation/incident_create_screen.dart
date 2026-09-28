@@ -7,6 +7,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/status_colors.dart';
 import '../../../core/domain/api_enum.dart';
 import '../../../core/domain/enums.dart';
+import '../../../core/domain/tone.dart';
 import '../../../core/errors/app_exception.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/validators.dart';
@@ -14,6 +15,8 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/feedback.dart';
 import '../../../core/widgets/inline_message.dart';
 import '../../../core/widgets/submit_button.dart';
+import '../../vehicle/data/vehicle_repository.dart';
+import '../../vehicle/domain/vehicule.dart';
 import '../data/incidents_repository.dart';
 import '../domain/incident.dart';
 import 'incident_draft.dart';
@@ -146,6 +149,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
   @override
   Widget build(BuildContext context) {
     final draft = ref.watch(incidentDraftProvider);
+    final noVehicle = ref.watch(vehicleProvider).value?.value is NoVehicle;
     final theme = Theme.of(context);
     final fieldErrors = switch (_error) {
       ApiException(:final fieldErrors) => fieldErrors,
@@ -165,6 +169,15 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (noVehicle) ...[
+                      const InlineMessage(
+                        message:
+                            '${NoVehicle.message} : la déclaration risque '
+                            "d'être refusée.",
+                        tone: Tone.warning,
+                      ),
+                      AppSpacing.gapLg,
+                    ],
                     if (_error case final error?) ...[
                       InlineMessage.error(error),
                       AppSpacing.gapLg,

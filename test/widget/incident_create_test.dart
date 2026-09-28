@@ -9,6 +9,27 @@ import '../helpers/pump.dart';
 import '../helpers/test_app.dart';
 
 void main() {
+  testWidgets('sans véhicule affecté : avertissement', (tester) async {
+    final backend = FakeBackend()
+      ..json(
+        'GET',
+        ApiEndpoints.vehicule,
+        404,
+        Contract.response('Mon véhicule', '404'),
+      );
+    await pumpScreen(
+      tester,
+      const IncidentCreateScreen(),
+      backend: backend,
+      session: testSession(),
+    );
+
+    expect(
+      find.textContaining('Aucun véhicule ne vous est affecté actuellement'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('boutons photo : caméra directe et galerie', (tester) async {
     await pumpScreen(
       tester,
@@ -32,6 +53,7 @@ void main() {
 
     final submit = find.text("Déclarer l'incident");
     await tester.ensureVisible(submit);
+    await tester.pump();
     await tester.tap(submit);
     await settle(tester);
 
@@ -68,6 +90,7 @@ void main() {
     );
     final submit = find.text("Déclarer l'incident");
     await tester.ensureVisible(submit);
+    await tester.pump();
     await tester.tap(submit);
     await settle(tester);
 
@@ -97,6 +120,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField), 'Pneu crevé');
     final submit = find.text("Déclarer l'incident");
     await tester.ensureVisible(submit);
+    await tester.pump();
     await tester.tap(submit);
     await settle(tester);
     await tester.drag(find.byType(ListView), const Offset(0, 800));

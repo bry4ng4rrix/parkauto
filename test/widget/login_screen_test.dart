@@ -60,14 +60,14 @@ void main() {
 
     await tester.enterText(
       find.byType(TextFormField).at(0),
-      ' tiana.rabe@parcauto.local ',
+      ' conducteur@exemple.mg ',
     );
     await tester.enterText(find.byType(TextFormField).at(1), 'secret');
     await tester.tap(find.text('Se connecter'));
     await settle(tester);
 
     expect(backend.calls('POST', ApiEndpoints.connexion).single.json, {
-      'email': 'tiana.rabe@parcauto.local',
+      'email': 'conducteur@exemple.mg',
       'motDePasse': 'secret',
       'appareil': 'Flutter',
     });

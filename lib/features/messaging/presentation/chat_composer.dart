@@ -97,7 +97,7 @@ class _ChatComposerState extends ConsumerState<ChatComposer> {
             ),
             ListTile(
               leading: const Icon(Icons.attach_file_rounded),
-              title: const Text('Joindre un document'),
+              title: const Text('Joindre un document (PDF, image)'),
               onTap: () => Navigator.of(sheet).pop('file'),
             ),
           ],
@@ -133,7 +133,11 @@ class _ChatComposerState extends ConsumerState<ChatComposer> {
 
   Future<List<LocalAttachment>> _pickDocuments(int remaining) async {
     try {
-      final files = await FilePicker.pickFiles();
+      // Types acceptés par le backend : JPEG, PNG, WEBP ou PDF.
+      final files = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'webp'],
+      );
       final result = <LocalAttachment>[];
       for (final file in files.take(remaining)) {
         final path = file.path;
