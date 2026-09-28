@@ -19,8 +19,7 @@ typedef JsonParser<T> = T Function(Object? json);
 /// Client HTTP authentifié. Point unique de conversion des erreurs Dio
 /// en [AppException].
 class ApiClient {
-  ApiClient(this._dio, {void Function({required bool reachable})? onResult})
-    : _onResult = onResult;
+  ApiClient(this._dio, {this._onResult});
 
   final Dio _dio;
   final void Function({required bool reachable})? _onResult;
