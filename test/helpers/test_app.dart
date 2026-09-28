@@ -114,7 +114,9 @@ class FakeRealtimeConnection implements RealtimeConnection {
   @override
   Future<void> close() async {
     closed = true;
-    if (!_frames.isClosed) await _frames.close();
+    // Pas d'attente : après l'annulation de l'abonnement, le futur de
+    // `close()` ne se termine jamais.
+    if (!_frames.isClosed) unawaited(_frames.close());
   }
 }
 
