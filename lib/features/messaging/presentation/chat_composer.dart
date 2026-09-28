@@ -83,11 +83,12 @@ class _ChatComposerState extends ConsumerState<ChatComposer> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
-              title: const Text('Prendre une photo'),
-              onTap: () => Navigator.of(sheet).pop('camera'),
-            ),
+            if (PhotoPicker.supportsCamera)
+              ListTile(
+                leading: const Icon(Icons.photo_camera_outlined),
+                title: const Text('Prendre une photo'),
+                onTap: () => Navigator.of(sheet).pop('camera'),
+              ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
               title: const Text('Choisir des photos'),

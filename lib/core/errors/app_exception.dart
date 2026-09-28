@@ -56,7 +56,8 @@ final class NetworkException extends AppException {
   @override
   String get userMessage => switch (failure) {
     NetworkFailure.offline =>
-      'Connexion impossible. Vérifiez votre connexion internet.',
+      'Connexion impossible. Vérifiez votre connexion internet ou '
+          'réessayez plus tard si le serveur est indisponible.',
     NetworkFailure.timeout =>
       'Le serveur met trop de temps à répondre. Réessayez.',
   };

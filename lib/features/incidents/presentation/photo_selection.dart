@@ -175,16 +175,18 @@ class PhotoSelection extends StatelessWidget {
         ],
         Row(
           children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: canAdd
-                    ? () => _pick(context, ImageSource.camera)
-                    : null,
-                icon: const Icon(Icons.photo_camera_outlined),
-                label: const Text('Appareil photo'),
+            if (PhotoPicker.supportsCamera) ...[
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: canAdd
+                      ? () => _pick(context, ImageSource.camera)
+                      : null,
+                  icon: const Icon(Icons.photo_camera_outlined),
+                  label: const Text('Appareil photo'),
+                ),
               ),
-            ),
-            AppSpacing.gapMd,
+              AppSpacing.gapMd,
+            ],
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: canAdd

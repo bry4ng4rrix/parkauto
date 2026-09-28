@@ -47,10 +47,14 @@ class MissionTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          // Retour à la ligne sur petit écran ou grand texte.
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
             children: [
               MissionStatusBadge(statut: mission.statut),
-              const Spacer(),
               Text(
                 AppFormat.range(mission.dateDebutPrevue, mission.dateFinPrevue),
                 style: muted,

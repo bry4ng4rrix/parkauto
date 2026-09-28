@@ -31,15 +31,12 @@ abstract final class Redactor {
   }
 
   /// Masque les paramètres de requête sensibles (ex. `?ticket=`).
-  static String redactUrl(String url) {
-    final uri = Uri.tryParse(url);
-    if (uri == null || uri.queryParameters.isEmpty) return url;
-    final query = {
-      for (final entry in uri.queryParameters.entries)
-        entry.key: isSensitiveKey(entry.key) ? mask : entry.value,
-    };
-    return uri.replace(queryParameters: query).toString();
-  }
+  static String redactUrl(String url) => url.replaceAllMapped(
+    RegExp(r'([?&])([^=&#]+)=([^&#]*)'),
+    (m) => isSensitiveKey(Uri.decodeQueryComponent(m[2] ?? ''))
+        ? '${m[1]}${m[2]}=$mask'
+        : m[0] ?? '',
+  );
 
   /// Masque les secrets présents dans du texte libre (JWT, jetons nommés).
   static String redactText(String text) => text

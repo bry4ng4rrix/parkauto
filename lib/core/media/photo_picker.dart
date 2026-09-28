@@ -35,6 +35,9 @@ class PhotoPicker {
   final int? maxBytes;
   final ImagePicker _picker;
 
+  /// L'appareil photo n'est disponible que sur mobile (pas sous Linux).
+  static bool get supportsCamera => Platform.isAndroid || Platform.isIOS;
+
   Future<PhotoPickResult> pick({
     required ImageSource source,
     required int remaining,
@@ -57,7 +60,8 @@ class PhotoPicker {
               limit: remaining,
             );
       return _check(files.take(remaining).toList());
-    } on PlatformException catch (e) {
+    } on Object catch (e) {
+      // PlatformException (autorisation), ou source non gérée sur desktop.
       AppLogger.warning('Photos', 'Sélection impossible', e);
       return PhotoPickResult(
         const [],

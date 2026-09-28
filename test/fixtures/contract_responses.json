@@ -1,0 +1,1126 @@
+{
+  "source": "appli-conducteur-reponses.json (version 2026-09-28) — réponses uniquement",
+  "erreursCommunes": {
+    "401": {
+      "horodatage": "2026-09-28T09:31:02.418Z",
+      "statut": 401,
+      "erreur": "Authentification requise",
+      "message": "Session absente ou expirée : reconnectez-vous",
+      "details": []
+    },
+    "403 (autre rôle)": {
+      "horodatage": "2026-09-28T09:31:02.418Z",
+      "statut": 403,
+      "erreur": "Accès refusé",
+      "message": "Rôle insuffisant pour cette action",
+      "details": []
+    },
+    "403 (compte non relié)": {
+      "horodatage": "2026-09-28T09:31:02.418Z",
+      "statut": 403,
+      "erreur": "Forbidden",
+      "message": "Votre compte n'est relié à aucune fiche conducteur : contactez le responsable du parc",
+      "details": []
+    }
+  },
+  "endpoints": [
+    {
+      "nom": "Connexion",
+      "methode": "POST",
+      "chemin": "/api/auth/mobile/connexion",
+      "reponses": {
+        "200": {
+          "jetonAcces": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aWFuYS5yYWJlQHBhcmNhdXRvLmxvY2FsIiwiaWRVdGlsaXNhdGV1ciI6MjcsInJvbGUiOiJDT05EVUNURVVSIiwiaWF0IjoxNzkwNTk0MjAwLCJleHAiOjE3OTA1OTc4MDB9.5mQx0kYHq3m6y1dT0x0s1N7aJ4fS9oV2c8wZ0y3bE1k",
+          "typeJeton": "Bearer",
+          "expireDans": 3600,
+          "jetonRafraichissement": "q3Zt0x0pX8mN4vB7kL2sD9fG6hJ1wE5rT8yU3iO0pA2",
+          "expirationRafraichissement": "2026-10-28T09:30:00Z",
+          "role": "CONDUCTEUR",
+          "idConducteur": 12,
+          "nomComplet": "Tiana RABE"
+        },
+        "400": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 400,
+          "erreur": "Requête invalide",
+          "message": "Un ou plusieurs champs sont invalides",
+          "details": [
+            "email : ne doit pas être vide"
+          ]
+        },
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification échouée",
+          "message": "Email ou mot de passe incorrect",
+          "details": []
+        },
+        "401 (compte désactivé)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification échouée",
+          "message": "Compte désactivé",
+          "details": []
+        },
+        "403 (autre rôle)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "L'application mobile est réservée aux conducteurs",
+          "details": []
+        },
+        "403 (compte non relié)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Votre compte n'est relié à aucune fiche conducteur : contactez le responsable du parc",
+          "details": []
+        },
+        "429": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 429,
+          "erreur": "Too Many Requests",
+          "message": "Trop de tentatives de connexion. Réessayez dans 15 minutes.",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Rafraîchir les jetons",
+      "methode": "POST",
+      "chemin": "/api/auth/mobile/rafraichir",
+      "reponses": {
+        "200": {
+          "jetonAcces": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0aWFuYS5yYWJlQHBhcmNhdXRvLmxvY2FsIiwiaWRVdGlsaXNhdGV1ciI6MjcsInJvbGUiOiJDT05EVUNURVVSIiwiaWF0IjoxNzkwNTk0MjAwLCJleHAiOjE3OTA1OTc4MDB9.8pLw2kYHq3m6y1dT0x0s1N7aJ4fS9oV2c8wZ0y3bE1k",
+          "typeJeton": "Bearer",
+          "expireDans": 3600,
+          "jetonRafraichissement": "Hn7Kc2Lw9Qx4Ze1Rt6Yb3Mv8Pa5Sd0Fg7Jk2Wq9Ex4Ta",
+          "expirationRafraichissement": "2026-10-28T10:31:00Z",
+          "role": "CONDUCTEUR",
+          "idConducteur": 12,
+          "nomComplet": "Tiana RABE"
+        },
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification échouée",
+          "message": "Session expirée : reconnectez-vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Déconnexion",
+      "methode": "POST",
+      "chemin": "/api/auth/mobile/deconnexion",
+      "reponses": {
+        "204": null
+      }
+    },
+    {
+      "nom": "Accueil",
+      "methode": "GET",
+      "chemin": "/api/moi",
+      "reponses": {
+        "200": {
+          "profil": {
+            "idConducteur": 12,
+            "matricule": "C-012",
+            "nom": "RABE",
+            "prenom": "Tiana",
+            "telephone": "034 12 345 67",
+            "email": "tiana.rabe@parcauto.local",
+            "categorie": "VEHICULE_ROUTIER",
+            "statut": "EN_SERVICE",
+            "qualification": {
+              "type": "PERMIS",
+              "numero": "B-778812",
+              "categorie": "C",
+              "dateExpiration": "2026-10-15",
+              "joursRestants": 17,
+              "niveau": "BIENTOT"
+            }
+          },
+          "vehicule": {
+            "idEngin": 4,
+            "identifiant": "1234 TAB",
+            "libelle": "1234 TAB — Toyota Hilux",
+            "marque": "Toyota",
+            "modele": "Hilux",
+            "categorie": "VEHICULE_ROUTIER",
+            "statut": "EN_MISSION",
+            "kilometrage": 84230.0,
+            "compteurHeures": 0.0,
+            "source": "MISSION"
+          },
+          "missionEnCours": {
+            "idMission": 88,
+            "motif": "Livraison matériaux chantier Ivato",
+            "statut": "EN_COURS",
+            "dateDebutPrevue": "2026-09-28T07:00:00",
+            "dateFinPrevue": "2026-09-28T17:00:00",
+            "dateDebutReelle": "2026-09-28T07:12:40",
+            "dateFinReelle": null,
+            "kilometrageDepart": 84150.0,
+            "kilometrageRetour": null,
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          "prochainesMissions": [
+            {
+              "idMission": 91,
+              "motif": "Transport équipe chantier Ambohidratrimo",
+              "statut": "PLANIFIEE",
+              "dateDebutPrevue": "2026-09-29T06:30:00",
+              "dateFinPrevue": "2026-09-29T12:00:00",
+              "dateDebutReelle": null,
+              "dateFinReelle": null,
+              "kilometrageDepart": null,
+              "kilometrageRetour": null,
+              "idEngin": 4,
+              "vehicule": "1234 TAB — Toyota Hilux"
+            },
+            {
+              "idMission": 94,
+              "motif": "Récupération pièces au garage Andraharo",
+              "statut": "PLANIFIEE",
+              "dateDebutPrevue": "2026-09-30T08:00:00",
+              "dateFinPrevue": "2026-09-30T11:00:00",
+              "dateDebutReelle": null,
+              "dateFinReelle": null,
+              "kilometrageDepart": null,
+              "kilometrageRetour": null,
+              "idEngin": 4,
+              "vehicule": "1234 TAB — Toyota Hilux"
+            }
+          ],
+          "messagesNonLus": 3,
+          "alertesVehicule": 2
+        },
+        "200 (sans véhicule ni mission)": {
+          "profil": {
+            "idConducteur": 12,
+            "matricule": "C-012",
+            "nom": "RABE",
+            "prenom": "Tiana",
+            "telephone": "034 12 345 67",
+            "email": "tiana.rabe@parcauto.local",
+            "categorie": "VEHICULE_ROUTIER",
+            "statut": "EN_SERVICE",
+            "qualification": {
+              "type": "PERMIS",
+              "numero": "B-778812",
+              "categorie": "C",
+              "dateExpiration": "2026-10-15",
+              "joursRestants": 17,
+              "niveau": "BIENTOT"
+            }
+          },
+          "vehicule": null,
+          "missionEnCours": null,
+          "prochainesMissions": [],
+          "messagesNonLus": 0,
+          "alertesVehicule": 0
+        },
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification requise",
+          "message": "Session absente ou expirée : reconnectez-vous",
+          "details": []
+        },
+        "403 (compte non relié)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Votre compte n'est relié à aucune fiche conducteur : contactez le responsable du parc",
+          "details": []
+        },
+        "403 (autre rôle)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Accès refusé",
+          "message": "Rôle insuffisant pour cette action",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Profil",
+      "methode": "GET",
+      "chemin": "/api/moi/profil",
+      "reponses": {
+        "200": {
+          "idConducteur": 12,
+          "matricule": "C-012",
+          "nom": "RABE",
+          "prenom": "Tiana",
+          "telephone": "034 12 345 67",
+          "email": "tiana.rabe@parcauto.local",
+          "categorie": "VEHICULE_ROUTIER",
+          "statut": "EN_SERVICE",
+          "qualification": {
+            "type": "PERMIS",
+            "numero": "B-778812",
+            "categorie": "C",
+            "dateExpiration": "2026-10-15",
+            "joursRestants": 17,
+            "niveau": "BIENTOT"
+          }
+        },
+        "200 (conducteur d'engin)": {
+          "idConducteur": 15,
+          "matricule": "E-003",
+          "nom": "RANDRIA",
+          "prenom": "Faly",
+          "telephone": "034 12 345 67",
+          "email": "faly.randria@parcauto.local",
+          "categorie": "ENGIN_CHANTIER",
+          "statut": "EN_SERVICE",
+          "qualification": {
+            "type": "CACES",
+            "numero": "CACES-R482-0192",
+            "categorie": "C1",
+            "dateExpiration": "2028-03-31",
+            "joursRestants": 550,
+            "niveau": "OK"
+          }
+        },
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification requise",
+          "message": "Session absente ou expirée : reconnectez-vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Mon véhicule",
+      "methode": "GET",
+      "chemin": "/api/moi/vehicule",
+      "reponses": {
+        "200": {
+          "vehicule": {
+            "idEngin": 4,
+            "identifiant": "1234 TAB",
+            "libelle": "1234 TAB — Toyota Hilux",
+            "marque": "Toyota",
+            "modele": "Hilux",
+            "categorie": "VEHICULE_ROUTIER",
+            "statut": "EN_MISSION",
+            "kilometrage": 84230.0,
+            "compteurHeures": 0.0,
+            "source": "MISSION"
+          },
+          "energie": "GASOIL",
+          "capaciteReservoirLitres": 80.0,
+          "idMissionEnCours": 88,
+          "documents": [
+            {
+              "type": "CARTE_GRISE",
+              "numeroReference": "CG-2019-004512",
+              "dateExpiration": null,
+              "joursRestants": null,
+              "niveau": "SANS_DATE"
+            },
+            {
+              "type": "ASSURANCE",
+              "numeroReference": "AS-2026-114",
+              "dateExpiration": "2026-10-01",
+              "joursRestants": 3,
+              "niveau": "BIENTOT"
+            },
+            {
+              "type": "VISITE_TECHNIQUE",
+              "numeroReference": "VT-88213",
+              "dateExpiration": "2027-02-28",
+              "joursRestants": 153,
+              "niveau": "OK"
+            },
+            {
+              "type": "CONFORMITE_FISCALE",
+              "numeroReference": "CF-2025-3310",
+              "dateExpiration": "2026-08-31",
+              "joursRestants": -28,
+              "niveau": "EXPIRE"
+            },
+            {
+              "type": "CARTE_CARBURANT",
+              "numeroReference": "JOV-004-7781",
+              "dateExpiration": "2027-06-30",
+              "joursRestants": 275,
+              "niveau": "OK"
+            }
+          ],
+          "alertes": [
+            {
+              "type": "PERTE_CONNEXION_GPS",
+              "priorite": "ELEVEE",
+              "description": "Aucune position GPS reçue depuis 45 min pour '1234 TAB — Toyota Hilux'",
+              "nombreOccurrences": 12,
+              "premiereOccurrence": "2026-09-28T06:00:00Z",
+              "derniereOccurrence": "2026-09-28T09:00:00Z"
+            },
+            {
+              "type": "DOCUMENT_A_EXPIRER",
+              "priorite": "MOYENNE",
+              "description": "Assurance de '1234 TAB — Toyota Hilux' expire le 01/10/2026",
+              "nombreOccurrences": 1,
+              "premiereOccurrence": "2026-09-16T01:00:00Z",
+              "derniereOccurrence": "2026-09-16T01:00:00Z"
+            }
+          ],
+          "dernierPlein": {
+            "dateHeure": "2026-09-28T10:02:11",
+            "kilometrageAuPlein": 84230.0,
+            "quantiteLitres": 52.5,
+            "typeApprovisionnement": "PLEIN_COMPLET"
+          }
+        },
+        "404": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 404,
+          "erreur": "Ressource introuvable",
+          "message": "Aucun véhicule ne vous est affecté actuellement",
+          "details": []
+        },
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification requise",
+          "message": "Session absente ou expirée : reconnectez-vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Mes missions",
+      "methode": "GET",
+      "chemin": "/api/moi/missions",
+      "reponses": {
+        "200": [
+          {
+            "idMission": 88,
+            "motif": "Livraison matériaux chantier Ivato",
+            "statut": "EN_COURS",
+            "dateDebutPrevue": "2026-09-28T07:00:00",
+            "dateFinPrevue": "2026-09-28T17:00:00",
+            "dateDebutReelle": "2026-09-28T07:12:40",
+            "dateFinReelle": null,
+            "kilometrageDepart": 84150.0,
+            "kilometrageRetour": null,
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idMission": 91,
+            "motif": "Transport équipe chantier Ambohidratrimo",
+            "statut": "PLANIFIEE",
+            "dateDebutPrevue": "2026-09-29T06:30:00",
+            "dateFinPrevue": "2026-09-29T12:00:00",
+            "dateDebutReelle": null,
+            "dateFinReelle": null,
+            "kilometrageDepart": null,
+            "kilometrageRetour": null,
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idMission": 94,
+            "motif": "Récupération pièces au garage Andraharo",
+            "statut": "PLANIFIEE",
+            "dateDebutPrevue": "2026-09-30T08:00:00",
+            "dateFinPrevue": "2026-09-30T11:00:00",
+            "dateDebutReelle": null,
+            "dateFinReelle": null,
+            "kilometrageDepart": null,
+            "kilometrageRetour": null,
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idMission": 85,
+            "motif": "Livraison ciment chantier Tanjombato",
+            "statut": "TERMINEE",
+            "dateDebutPrevue": "2026-09-26T07:00:00",
+            "dateFinPrevue": "2026-09-26T16:00:00",
+            "dateDebutReelle": "2026-09-26T07:05:12",
+            "dateFinReelle": "2026-09-26T15:41:03",
+            "kilometrageDepart": 83890.0,
+            "kilometrageRetour": 84002.0,
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idMission": 83,
+            "motif": "Visite de chantier Alasora",
+            "statut": "ANNULEE",
+            "dateDebutPrevue": "2026-09-25T09:00:00",
+            "dateFinPrevue": "2026-09-25T12:00:00",
+            "dateDebutReelle": null,
+            "dateFinReelle": null,
+            "kilometrageDepart": null,
+            "kilometrageRetour": null,
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          }
+        ],
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification requise",
+          "message": "Session absente ou expirée : reconnectez-vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Démarrer une mission",
+      "methode": "POST",
+      "chemin": "/api/moi/missions/91/demarrer",
+      "reponses": {
+        "200": {
+          "idMission": 91,
+          "motif": "Transport équipe chantier Ambohidratrimo",
+          "statut": "EN_COURS",
+          "dateDebutPrevue": "2026-09-29T06:30:00",
+          "dateFinPrevue": "2026-09-29T12:00:00",
+          "dateDebutReelle": "2026-09-29T06:34:18",
+          "dateFinReelle": null,
+          "kilometrageDepart": 84360.0,
+          "kilometrageRetour": null,
+          "idEngin": 4,
+          "vehicule": "1234 TAB — Toyota Hilux"
+        },
+        "403": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Cette mission ne vous est pas attribuée",
+          "details": []
+        },
+        "404": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 404,
+          "erreur": "Ressource introuvable",
+          "message": "Mission introuvable (id=91)",
+          "details": []
+        },
+        "409": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Seule une mission PLANIFIEE peut démarrer (statut actuel : EN_COURS)",
+          "details": []
+        },
+        "409 (assurance)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "L'engin '1234 TAB — Toyota Hilux' n'a pas d'assurance valide, la mission ne peut pas démarrer (règle 11.20)",
+          "details": []
+        },
+        "409 (compteur)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Le kilométrage (84100,0) ne peut pas être inférieur au kilométrage actuel (84360,0)",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Terminer une mission",
+      "methode": "POST",
+      "chemin": "/api/moi/missions/88/terminer",
+      "reponses": {
+        "200": {
+          "idMission": 88,
+          "motif": "Livraison matériaux chantier Ivato",
+          "statut": "TERMINEE",
+          "dateDebutPrevue": "2026-09-28T07:00:00",
+          "dateFinPrevue": "2026-09-28T17:00:00",
+          "dateDebutReelle": "2026-09-28T07:12:40",
+          "dateFinReelle": "2026-09-28T16:48:02",
+          "kilometrageDepart": 84150.0,
+          "kilometrageRetour": 84360.0,
+          "idEngin": 4,
+          "vehicule": "1234 TAB — Toyota Hilux"
+        },
+        "400": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 400,
+          "erreur": "Requête invalide",
+          "message": "Un ou plusieurs champs sont invalides",
+          "details": [
+            "kilometrage : ne doit pas être nul"
+          ]
+        },
+        "409": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Le kilométrage de retour (84100,0) ne peut pas être inférieur au kilométrage de départ (84150,0)",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Mes saisies carburant",
+      "methode": "GET",
+      "chemin": "/api/moi/pleins",
+      "reponses": {
+        "200": [
+          {
+            "idCarburant": 303,
+            "dateHeure": "2026-09-28T15:05:00",
+            "kilometrageAuPlein": 84360.0,
+            "quantiteLitres": 10.0,
+            "prixUnitaire": 5200.0,
+            "montantTotal": 52000.0,
+            "station": null,
+            "typeApprovisionnement": "BIDON",
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idCarburant": 302,
+            "dateHeure": "2026-09-28T13:40:00",
+            "kilometrageAuPlein": 84300.0,
+            "quantiteLitres": 20.0,
+            "prixUnitaire": 5200.0,
+            "montantTotal": 104000.0,
+            "station": "Jovena Ivato",
+            "typeApprovisionnement": "APPOINT",
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idCarburant": 301,
+            "dateHeure": "2026-09-28T10:02:11",
+            "kilometrageAuPlein": 84230.0,
+            "quantiteLitres": 52.5,
+            "prixUnitaire": 5200.0,
+            "montantTotal": 273000.0,
+            "station": "Jovena Ivato",
+            "typeApprovisionnement": "PLEIN_COMPLET",
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          },
+          {
+            "idCarburant": 297,
+            "dateHeure": "2026-09-27T16:40:00",
+            "kilometrageAuPlein": 84002.0,
+            "quantiteLitres": 55.0,
+            "prixUnitaire": 5150.0,
+            "montantTotal": 283250.0,
+            "station": "Total Andraharo",
+            "typeApprovisionnement": "PLEIN_COMPLET",
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux"
+          }
+        ],
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification requise",
+          "message": "Session absente ou expirée : reconnectez-vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Plein complet",
+      "methode": "POST",
+      "chemin": "/api/moi/pleins",
+      "reponses": {
+        "201": {
+          "idCarburant": 301,
+          "dateHeure": "2026-09-28T10:02:11",
+          "kilometrageAuPlein": 84230.0,
+          "quantiteLitres": 52.5,
+          "prixUnitaire": 5200.0,
+          "montantTotal": 273000.0,
+          "station": "Jovena Ivato",
+          "typeApprovisionnement": "PLEIN_COMPLET",
+          "idEngin": 4,
+          "vehicule": "1234 TAB — Toyota Hilux"
+        },
+        "400": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 400,
+          "erreur": "Requête invalide",
+          "message": "Un ou plusieurs champs sont invalides",
+          "details": [
+            "quantiteLitres : doit être supérieur à 0"
+          ]
+        },
+        "403": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Ce véhicule ne vous est pas affecté actuellement",
+          "details": []
+        },
+        "409 (aucun véhicule)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Aucun véhicule ne vous est affecté actuellement",
+          "details": []
+        },
+        "409 (compteur)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Le kilométrage (84100,0) ne peut pas être inférieur au kilométrage actuel (84230,0)",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Appoint",
+      "methode": "POST",
+      "chemin": "/api/moi/pleins",
+      "reponses": {
+        "201": {
+          "idCarburant": 302,
+          "dateHeure": "2026-09-28T13:40:00",
+          "kilometrageAuPlein": 84300.0,
+          "quantiteLitres": 20.0,
+          "prixUnitaire": 5200.0,
+          "montantTotal": 104000.0,
+          "station": "Jovena Ivato",
+          "typeApprovisionnement": "APPOINT",
+          "idEngin": 4,
+          "vehicule": "1234 TAB — Toyota Hilux"
+        }
+      }
+    },
+    {
+      "nom": "Bidon",
+      "methode": "POST",
+      "chemin": "/api/moi/pleins",
+      "reponses": {
+        "201": {
+          "idCarburant": 303,
+          "dateHeure": "2026-09-28T15:05:00",
+          "kilometrageAuPlein": 84360.0,
+          "quantiteLitres": 10.0,
+          "prixUnitaire": 5200.0,
+          "montantTotal": 52000.0,
+          "station": null,
+          "typeApprovisionnement": "BIDON",
+          "idEngin": 4,
+          "vehicule": "1234 TAB — Toyota Hilux"
+        }
+      }
+    },
+    {
+      "nom": "Mes incidents",
+      "methode": "GET",
+      "chemin": "/api/moi/incidents",
+      "reponses": {
+        "200": [
+          {
+            "idIncident": 57,
+            "type": "PANNE",
+            "gravite": "ELEVEE",
+            "statut": "DECLARE",
+            "description": "Voyant moteur allumé, perte de puissance en côte",
+            "dateSurvenue": "2026-09-28T10:05:00",
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux",
+            "idMission": 88,
+            "nombrePhotos": 2
+          },
+          {
+            "idIncident": 52,
+            "type": "ACCIDENT",
+            "gravite": "MOYENNE",
+            "statut": "CLOTURE",
+            "description": "Rétroviseur gauche cassé en manœuvre sur le chantier",
+            "dateSurvenue": "2026-09-20T14:30:00",
+            "idEngin": 4,
+            "vehicule": "1234 TAB — Toyota Hilux",
+            "idMission": null,
+            "nombrePhotos": 1
+          }
+        ],
+        "401": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 401,
+          "erreur": "Authentification requise",
+          "message": "Session absente ou expirée : reconnectez-vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Déclarer un incident",
+      "methode": "POST",
+      "chemin": "/api/moi/incidents",
+      "reponses": {
+        "201": {
+          "idIncident": 57,
+          "type": "PANNE",
+          "gravite": "ELEVEE",
+          "statut": "DECLARE",
+          "description": "Voyant moteur allumé, perte de puissance en côte",
+          "dateSurvenue": "2026-09-28T10:05:00",
+          "idEngin": 4,
+          "vehicule": "1234 TAB — Toyota Hilux",
+          "idMission": 88,
+          "nombrePhotos": 0
+        },
+        "400": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 400,
+          "erreur": "Requête invalide",
+          "message": "Un ou plusieurs champs sont invalides",
+          "details": [
+            "description : ne doit pas être vide"
+          ]
+        },
+        "400 (valeur inconnue)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 400,
+          "erreur": "Requête invalide",
+          "message": "Le corps de la requête est illisible (JSON attendu, encodé en UTF-8)",
+          "details": []
+        },
+        "403": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Ce véhicule ne vous est pas affecté actuellement",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Ajouter une photo",
+      "methode": "POST",
+      "chemin": "/api/moi/incidents/57/photos",
+      "reponses": {
+        "201": {
+          "idPhoto": 140,
+          "legende": "Tableau de bord",
+          "dateAjout": "2026-09-28T07:06:12Z",
+          "url": "/api/moi/incidents/photos/140/fichier"
+        },
+        "403": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Cet incident n'a pas été déclaré par vous",
+          "details": []
+        },
+        "409 (clôturé)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Cet incident est clôturé : on ne peut plus y ajouter de photo",
+          "details": []
+        },
+        "409 (limite)": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "10 photos au plus par incident",
+          "details": []
+        },
+        "413": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 413,
+          "erreur": "Fichier trop volumineux",
+          "message": "Le fichier envoyé dépasse la taille maximale autorisée (5 Mo)",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Photos d'un incident",
+      "methode": "GET",
+      "chemin": "/api/moi/incidents/57/photos",
+      "reponses": {
+        "200": [
+          {
+            "idPhoto": 140,
+            "legende": "Tableau de bord",
+            "dateAjout": "2026-09-28T07:06:12Z",
+            "url": "/api/moi/incidents/photos/140/fichier"
+          },
+          {
+            "idPhoto": 141,
+            "legende": null,
+            "dateAjout": "2026-09-28T07:07:45Z",
+            "url": "/api/moi/incidents/photos/141/fichier"
+          }
+        ],
+        "403": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 403,
+          "erreur": "Forbidden",
+          "message": "Cet incident n'a pas été déclaré par vous",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Fichier d'une photo",
+      "methode": "GET",
+      "chemin": "/api/moi/incidents/photos/140/fichier",
+      "reponses": {
+        "200": "<octets de l'image> (Content-Type: image/jpeg)",
+        "404": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 404,
+          "erreur": "Ressource introuvable",
+          "message": "IncidentPhoto introuvable (id=140)",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Mes conversations",
+      "methode": "GET",
+      "chemin": "/api/messagerie/conversations",
+      "reponses": {
+        "200": [
+          {
+            "idConversation": 5,
+            "type": "PRIVEE",
+            "titre": "Hery RAKOTO",
+            "objetType": null,
+            "objetId": null,
+            "interlocuteur": {
+              "idUtilisateur": 2,
+              "nomComplet": "Hery RAKOTO",
+              "role": "RESPONSABLE_PARC"
+            },
+            "dateDernierMessage": "2026-09-28T08:15:30Z",
+            "nonLus": 2
+          },
+          {
+            "idConversation": 3,
+            "type": "CANAL",
+            "titre": "Conducteurs",
+            "objetType": null,
+            "objetId": null,
+            "interlocuteur": null,
+            "dateDernierMessage": "2026-09-27T17:02:11Z",
+            "nonLus": 1
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Messages non lus",
+      "methode": "GET",
+      "chemin": "/api/messagerie/non-lus",
+      "reponses": {
+        "200": {
+          "total": 3
+        }
+      }
+    },
+    {
+      "nom": "Contacts",
+      "methode": "GET",
+      "chemin": "/api/messagerie/contacts",
+      "reponses": {
+        "200": [
+          {
+            "idUtilisateur": 5,
+            "nomComplet": "Lova ANDRIA",
+            "role": "CHEF_MAINTENANCE"
+          },
+          {
+            "idUtilisateur": 2,
+            "nomComplet": "Hery RAKOTO",
+            "role": "RESPONSABLE_PARC"
+          },
+          {
+            "idUtilisateur": 1,
+            "nomComplet": "Nirina RAZAFY",
+            "role": "DG"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Ouvrir une conversation privée",
+      "methode": "POST",
+      "chemin": "/api/messagerie/conversations/privee",
+      "reponses": {
+        "200": {
+          "idConversation": 5,
+          "type": "PRIVEE",
+          "titre": "Hery RAKOTO",
+          "objetType": null,
+          "objetId": null,
+          "interlocuteur": {
+            "idUtilisateur": 2,
+            "nomComplet": "Hery RAKOTO",
+            "role": "RESPONSABLE_PARC"
+          },
+          "dateDernierMessage": "2026-09-28T08:15:30Z",
+          "nonLus": 2
+        },
+        "404": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 404,
+          "erreur": "Ressource introuvable",
+          "message": "Utilisateur introuvable (id=99)",
+          "details": []
+        },
+        "409": {
+          "horodatage": "2026-09-28T09:31:02.418Z",
+          "statut": 409,
+          "erreur": "Règle de gestion violée",
+          "message": "Impossible d'ouvrir une conversation avec soi-même",
+          "details": []
+        }
+      }
+    },
+    {
+      "nom": "Messages d'une conversation",
+      "methode": "GET",
+      "chemin": "/api/messagerie/conversations/5/messages?limite=30",
+      "reponses": {
+        "200": [
+          {
+            "idMessage": 410,
+            "idConversation": 5,
+            "auteur": {
+              "idUtilisateur": 2,
+              "nomComplet": "Hery RAKOTO",
+              "role": "RESPONSABLE_PARC"
+            },
+            "contenu": "Bonjour Tiana, le chantier d'Ivato attend le ciment avant 10 h.",
+            "dateEnvoi": "2026-09-28T06:40:02Z",
+            "piecesJointes": []
+          },
+          {
+            "idMessage": 411,
+            "idConversation": 5,
+            "auteur": {
+              "idUtilisateur": 27,
+              "nomComplet": "Tiana RABE",
+              "role": "CONDUCTEUR"
+            },
+            "contenu": "Bien reçu, je pars maintenant.",
+            "dateEnvoi": "2026-09-28T06:52:47Z",
+            "piecesJointes": []
+          },
+          {
+            "idMessage": 415,
+            "idConversation": 5,
+            "auteur": {
+              "idUtilisateur": 2,
+              "nomComplet": "Hery RAKOTO",
+              "role": "RESPONSABLE_PARC"
+            },
+            "contenu": "Voici le bon de livraison.",
+            "dateEnvoi": "2026-09-28T08:15:30Z",
+            "piecesJointes": [
+              {
+                "idPieceJointe": 31,
+                "nom": "bon-livraison-ivato.pdf",
+                "typeContenu": "application/pdf",
+                "taille": 184233,
+                "image": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Envoyer un message",
+      "methode": "POST",
+      "chemin": "/api/messagerie/conversations/5/messages",
+      "reponses": {
+        "201": {
+          "idMessage": 418,
+          "idConversation": 5,
+          "auteur": {
+            "idUtilisateur": 27,
+            "nomComplet": "Tiana RABE",
+            "role": "CONDUCTEUR"
+          },
+          "contenu": "Déchargement terminé.",
+          "dateEnvoi": "2026-09-28T10:20:05Z",
+          "piecesJointes": [
+            {
+              "idPieceJointe": 32,
+              "nom": "chargement.jpg",
+              "typeContenu": "image/jpeg",
+              "taille": 412880,
+              "image": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "nom": "Marquer comme lu",
+      "methode": "POST",
+      "chemin": "/api/messagerie/conversations/5/lu",
+      "reponses": {
+        "204": null
+      }
+    },
+    {
+      "nom": "Télécharger une pièce jointe",
+      "methode": "GET",
+      "chemin": "/api/messagerie/pieces-jointes/31",
+      "reponses": {
+        "200": "<octets du fichier> (Content-Type: application/pdf ; Content-Disposition: attachment; filename=\"bon-livraison-ivato.pdf\")"
+      }
+    },
+    {
+      "nom": "Ticket temps réel",
+      "methode": "POST",
+      "chemin": "/api/messagerie/ticket-temps-reel",
+      "reponses": {
+        "200": {
+          "ticket": "Vd3kQ9x2LmT7pR4sW8yB1nC6fH0jK5gA2zE9uX3oI7q",
+          "expireDansSecondes": 30
+        }
+      }
+    }
+  ],
+  "tempsReel": {
+    "description": "Événement reçu sur le WebSocket quand un message arrive dans une conversation visible",
+    "evenement": {
+      "type": "MESSAGE",
+      "idConversation": 5,
+      "message": {
+        "idMessage": 418,
+        "idConversation": 5,
+        "auteur": {
+          "idUtilisateur": 27,
+          "nomComplet": "Tiana RABE",
+          "role": "CONDUCTEUR"
+        },
+        "contenu": "Déchargement terminé.",
+        "dateEnvoi": "2026-09-28T10:20:05Z",
+        "piecesJointes": [
+          {
+            "idPieceJointe": 32,
+            "nom": "chargement.jpg",
+            "typeContenu": "image/jpeg",
+            "taille": 412880,
+            "image": true
+          }
+        ]
+      }
+    },
+    "pong": {
+      "type": "PONG"
+    }
+  }
+}
