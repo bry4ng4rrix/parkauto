@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/theme/app_spacing.dart';
+import '../../../core/media/camera_capture.dart';
 import '../../../core/media/photo_picker.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/feedback.dart';
@@ -45,10 +46,14 @@ class PhotoSelection extends StatelessWidget {
   final bool enabled;
 
   Future<void> _pick(BuildContext context, ImageSource source) async {
-    final result = await PhotoPicker(maxBytes: Incident.maxPhotoBytes).pick(
-      source: source,
-      remaining: remaining,
-    );
+    final result = source == ImageSource.camera
+        ? await CameraCapture.capture(
+            context,
+            maxBytes: Incident.maxPhotoBytes,
+          )
+        : await PhotoPicker(
+            maxBytes: Incident.maxPhotoBytes,
+          ).pick(source: source, remaining: remaining);
     if (!context.mounted) return;
     if (result.error case final message?) {
       showInfoMessage(context, message);
@@ -175,14 +180,14 @@ class PhotoSelection extends StatelessWidget {
         ],
         Row(
           children: [
-            if (PhotoPicker.supportsCamera) ...[
+            if (CameraCapture.isAvailable) ...[
               Expanded(
-                child: OutlinedButton.icon(
+                child: FilledButton.tonalIcon(
                   onPressed: canAdd
                       ? () => _pick(context, ImageSource.camera)
                       : null,
-                  icon: const Icon(Icons.photo_camera_outlined),
-                  label: const Text('Appareil photo'),
+                  icon: const Icon(Icons.photo_camera_rounded),
+                  label: const Text('Prendre une photo'),
                 ),
               ),
               AppSpacing.gapMd,

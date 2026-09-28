@@ -6,13 +6,12 @@ import '../../core/widgets/badge_icon_button.dart';
 import '../../features/home/presentation/quick_actions_sheet.dart';
 import '../../features/messaging/application/unread_counter.dart';
 
-/// Structure à onglets : barre de navigation (téléphone) ou rail (tablette).
+/// Structure à onglets : barre de navigation toujours fixée en bas
+/// (comportement Android, quelle que soit la largeur de la fenêtre).
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
-
-  static const _railBreakpoint = 600.0;
 
   void _select(int index) => navigationShell.goBranch(
     index,
@@ -22,7 +21,6 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final unread = ref.watch(unreadCountProvider);
-    final wide = MediaQuery.sizeOf(context).width >= _railBreakpoint;
     final index = navigationShell.currentIndex;
     final messagesLabel = unread > 0
         ? 'Messagerie, $unread non lu${unread > 1 ? 's' : ''}'
@@ -43,45 +41,15 @@ class AppShell extends ConsumerWidget {
     Widget icon(IconData data, int i) =>
         i == 2 ? CountBadge(count: unread, child: Icon(data)) : Icon(data);
 
-    final fab = index <= 1
-        ? FloatingActionButton.extended(
-            onPressed: () => showQuickActionsSheet(context),
-            icon: const Icon(Icons.add_rounded),
-            label: const Text('Déclarer'),
-          )
-        : null;
-
-    if (wide) {
-      return Scaffold(
-        floatingActionButton: fab,
-        body: Row(
-          children: [
-            SafeArea(
-              right: false,
-              child: NavigationRail(
-                selectedIndex: index,
-                onDestinationSelected: _select,
-                labelType: NavigationRailLabelType.all,
-                destinations: [
-                  for (final (i, item) in items.indexed)
-                    NavigationRailDestination(
-                      icon: Semantics(label: item.$4, child: icon(item.$1, i)),
-                      selectedIcon: icon(item.$2, i),
-                      label: Text(item.$3),
-                    ),
-                ],
-              ),
-            ),
-            const VerticalDivider(width: 1),
-            Expanded(child: navigationShell),
-          ],
-        ),
-      );
-    }
-
     return Scaffold(
       body: navigationShell,
-      floatingActionButton: fab,
+      floatingActionButton: index <= 1
+          ? FloatingActionButton.extended(
+              onPressed: () => showQuickActionsSheet(context),
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Déclarer'),
+            )
+          : null,
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
         onDestinationSelected: _select,

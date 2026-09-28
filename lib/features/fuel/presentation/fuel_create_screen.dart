@@ -267,11 +267,8 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
                             : 'Compteur actuel : ${AppFormat.km(vehicleKm)}',
                         errorText: fieldErrors['kilometrageAuPlein'],
                       ),
-                      validator: (v) => Validators.kilometrage(
-                        v,
-                        minimum: vehicleKm,
-                        minimumLabel: 'le kilométrage actuel',
-                      ),
+                      validator: (v) =>
+                          Validators.kilometrage(v, minimum: vehicleKm),
                     ),
                     AppSpacing.gapLg,
                     Row(

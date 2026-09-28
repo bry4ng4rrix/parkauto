@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkauto/core/api/api_endpoints.dart';
+import 'package:parkauto/core/domain/enums.dart';
+import 'package:parkauto/features/missions/data/missions_repository.dart';
 import 'package:parkauto/features/missions/presentation/mission_list_screen.dart';
 
 import '../helpers/contract.dart';
@@ -57,7 +59,10 @@ void main() {
     await settle(tester);
 
     expect(
-      find.textContaining('Ne peut pas être inférieur au kilométrage actuel'),
+      find.text(
+        'Ne peut pas être inférieur au kilométrage actuel du véhicule '
+        '(84 230 km)',
+      ),
       findsOneWidget,
     );
     expect(backend.calls('POST', ApiEndpoints.demarrerMission(91)), isEmpty);
@@ -107,7 +112,7 @@ void main() {
         200,
         Contract.response('Démarrer une mission', '200'),
       );
-    await pumpScreen(
+    final container = await pumpScreen(
       tester,
       const MissionListScreen(),
       backend: backend,
@@ -121,6 +126,11 @@ void main() {
     await settle(tester, 20);
 
     expect(find.text('Mission démarrée'), findsOneWidget);
-    expect(find.text('En cours · 2'), findsOneWidget);
+    // La réponse du serveur remplace la mission dans la liste.
+    final missions = container.read(missionsProvider).value?.value ?? [];
+    expect(
+      missions.firstWhere((m) => m.idMission == 91).statut,
+      StatutMission.enCours,
+    );
   });
 }

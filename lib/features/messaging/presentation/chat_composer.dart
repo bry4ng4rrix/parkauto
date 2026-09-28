@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/auth/session_controller.dart';
+import '../../../core/media/camera_capture.dart';
 import '../../../core/media/photo_picker.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/feedback.dart';
@@ -83,7 +84,7 @@ class _ChatComposerState extends ConsumerState<ChatComposer> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (PhotoPicker.supportsCamera)
+            if (CameraCapture.isAvailable)
               ListTile(
                 leading: const Icon(Icons.photo_camera_outlined),
                 title: const Text('Prendre une photo'),
@@ -118,7 +119,9 @@ class _ChatComposerState extends ConsumerState<ChatComposer> {
     ImageSource source,
     int remaining,
   ) async {
-    final result = await PhotoPicker().pick(source: source, remaining: remaining);
+    final result = source == ImageSource.camera
+        ? await CameraCapture.capture(context)
+        : await PhotoPicker().pick(source: source, remaining: remaining);
     if (result.error case final message? when mounted) {
       showInfoMessage(context, message);
     }

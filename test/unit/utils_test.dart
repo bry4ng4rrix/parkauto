@@ -24,8 +24,12 @@ void main() {
       expect(Validators.kilometrage('0'), 'Le kilométrage doit être supérieur à 0');
       expect(Validators.kilometrage('84 360'), isNull);
       expect(
-        Validators.kilometrage('84100', minimum: 84150, minimumLabel: 'le départ'),
-        startsWith('Ne peut pas être inférieur à le départ'),
+        Validators.kilometrage(
+          '84100',
+          minimum: 84150,
+          minimumLabel: 'au kilométrage de départ',
+        ),
+        'Ne peut pas être inférieur au kilométrage de départ (84 150 km)',
       );
     });
 

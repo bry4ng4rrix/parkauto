@@ -64,43 +64,52 @@ class _MissionActionSheet extends ConsumerStatefulWidget {
 
 class _MissionActionSheetState extends ConsumerState<_MissionActionSheet> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _km;
-  late final ({double? value, String label})? _minimum;
+  final _km = TextEditingController();
   bool _submitting = false;
   AppException? _error;
 
   Mission get _mission => widget.mission;
 
-  @override
-  void initState() {
-    super.initState();
-    final vehicle = switch (ref.read(vehicleProvider).value?.value) {
-      VehicleAssigned(:final details)
-          when details.vehicule.idEngin == _mission.idEngin =>
-        details.vehicule,
-      _ => null,
-    };
-    final vehicleKm = vehicle?.kilometrage;
+  /// Compteur du véhicule de la mission (le contrôle n'a de sens que pour
+  /// ce véhicule).
+  double? _vehicleKm(VehicleState? state) => switch (state) {
+    VehicleAssigned(:final details)
+        when details.vehicule.idEngin == _mission.idEngin =>
+      details.vehicule.kilometrage,
+    _ => null,
+  };
+
+  /// Minimum accepté : compteur du véhicule au démarrage, kilométrage de
+  /// départ à la fin.
+  ({double value, String helper, String label})? _minimum(double? vehicleKm) {
     final depart = _mission.kilometrageDepart;
-    // Le contrôle n'a de sens que pour le véhicule de la mission.
-    _minimum = switch (widget.action) {
+    return switch (widget.action) {
       MissionAction.start when vehicleKm != null => (
         value: vehicleKm,
-        label: 'le kilométrage actuel du véhicule',
+        helper: 'Compteur actuel : ${AppFormat.km(vehicleKm)}',
+        label: 'au kilométrage actuel du véhicule',
       ),
       MissionAction.finish when depart != null => (
         value: depart,
-        label: 'le kilométrage de départ',
+        helper: 'Kilométrage de départ : ${AppFormat.km(depart)}',
+        label: 'au kilométrage de départ',
       ),
       _ => null,
     };
-    final initial = [vehicleKm, depart].whereType<double>().fold<double?>(
-      null,
-      (best, v) => best == null || v > best ? v : best,
-    );
-    _km = TextEditingController(
-      text: initial == null ? '' : DecimalInput.format(initial),
-    );
+  }
+
+  /// Pré-remplissage avec la meilleure valeur connue.
+  void _prefill(double? vehicleKm) {
+    if (_km.text.isNotEmpty) return;
+    final candidates = [vehicleKm, _mission.kilometrageDepart].whereType<double>();
+    if (candidates.isEmpty) return;
+    _km.text = DecimalInput.format(candidates.reduce((a, b) => a > b ? a : b));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _prefill(_vehicleKm(ref.read(vehicleProvider).value?.value));
   }
 
   @override
@@ -171,7 +180,13 @@ class _MissionActionSheetState extends ConsumerState<_MissionActionSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final minimum = _minimum;
+    // Le véhicule peut arriver après l'ouverture de la feuille.
+    final vehicleKm = _vehicleKm(ref.watch(vehicleProvider).value?.value);
+    ref.listen(
+      vehicleProvider,
+      (_, next) => _prefill(_vehicleKm(next.value?.value)),
+    );
+    final minimum = _minimum(vehicleKm);
     final fieldError = switch (_error) {
       ApiException(:final fieldErrors) => fieldErrors['kilometrage'],
       _ => null,
@@ -214,10 +229,7 @@ class _MissionActionSheetState extends ConsumerState<_MissionActionSheet> {
                   labelText: 'Kilométrage actuel',
                   suffixText: 'km',
                   prefixIcon: const Icon(Icons.speed_rounded),
-                  helperText: minimum == null
-                      ? null
-                      : 'Au moins ${AppFormat.km(minimum.value)} '
-                            '(${minimum.label})',
+                  helperText: minimum?.helper,
                   errorText: fieldError,
                 ),
                 validator: (value) => Validators.kilometrage(

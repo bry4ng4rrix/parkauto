@@ -31,10 +31,12 @@ abstract final class Validators {
   }
 
   /// Kilométrage > 0 et, si connu, au moins égal au compteur de référence.
+  /// [minimumLabel] complète « Ne peut pas être inférieur … »
+  /// (ex. « au kilométrage de départ »).
   static String? kilometrage(
     String? value, {
     double? minimum,
-    String minimumLabel = 'le kilométrage actuel',
+    String minimumLabel = 'au kilométrage actuel',
   }) {
     final missing = required(
       value,
@@ -45,7 +47,7 @@ abstract final class Validators {
     if (number == null) return 'Kilométrage invalide';
     if (number <= 0) return 'Le kilométrage doit être supérieur à 0';
     if (minimum != null && number < minimum) {
-      return 'Ne peut pas être inférieur à $minimumLabel '
+      return 'Ne peut pas être inférieur $minimumLabel '
           '(${AppFormat.km(minimum)})';
     }
     return null;

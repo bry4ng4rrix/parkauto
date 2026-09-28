@@ -35,9 +35,6 @@ class PhotoPicker {
   final int? maxBytes;
   final ImagePicker _picker;
 
-  /// L'appareil photo n'est disponible que sur mobile (pas sous Linux).
-  static bool get supportsCamera => Platform.isAndroid || Platform.isIOS;
-
   Future<PhotoPickResult> pick({
     required ImageSource source,
     required int remaining,
