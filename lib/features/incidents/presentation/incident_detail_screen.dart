@@ -131,7 +131,10 @@ class _IncidentDetails extends ConsumerWidget {
                     onTap: () => context.push(AppRoutes.mission(missionId)),
                     child: Row(
                       children: [
-                        Icon(Icons.route_rounded, color: theme.colorScheme.primary),
+                        Icon(
+                          Icons.route_rounded,
+                          color: theme.colorScheme.primary,
+                        ),
                         AppSpacing.gapMd,
                         const Expanded(child: Text('Mission associée')),
                         const Icon(Icons.chevron_right_rounded),

@@ -82,7 +82,9 @@ class _NotificationList extends StatelessWidget {
           : const Divider(indent: 72),
       itemBuilder: (context, index) => index == items.length
           ? const _Footnote()
-          : ResponsiveCenter(child: _NotificationTile(notification: items[index])),
+          : ResponsiveCenter(
+              child: _NotificationTile(notification: items[index]),
+            ),
     );
   }
 }
@@ -95,8 +97,14 @@ class _NotificationTile extends ConsumerWidget {
   static (IconData, Tone) _style(AppNotificationKind kind) => switch (kind) {
     AppNotificationKind.message => (Icons.chat_bubble_rounded, Tone.info),
     AppNotificationKind.mission => (Icons.route_rounded, Tone.success),
-    AppNotificationKind.incident => (Icons.report_problem_rounded, Tone.warning),
-    AppNotificationKind.vehicleAlert => (Icons.warning_amber_rounded, Tone.danger),
+    AppNotificationKind.incident => (
+      Icons.report_problem_rounded,
+      Tone.warning,
+    ),
+    AppNotificationKind.vehicleAlert => (
+      Icons.warning_amber_rounded,
+      Tone.danger,
+    ),
     AppNotificationKind.expiry => (Icons.event_busy_rounded, Tone.warning),
     AppNotificationKind.info => (Icons.info_rounded, Tone.neutral),
   };

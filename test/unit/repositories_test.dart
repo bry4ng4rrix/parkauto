@@ -140,11 +140,9 @@ void main() {
       await expectLater(
         repository.declarer(request),
         throwsA(
-          isA<ApiException>().having(
-            (e) => e.fieldErrors,
-            'champs',
-            {'quantiteLitres': 'doit être supérieur à 0'},
-          ),
+          isA<ApiException>().having((e) => e.fieldErrors, 'champs', {
+            'quantiteLitres': 'doit être supérieur à 0',
+          }),
         ),
       );
     });
@@ -284,7 +282,10 @@ void main() {
           );
 
       expect(message.idMessage, 418);
-      final body = backend.calls('POST', ApiEndpoints.messages(5)).single.bodyText;
+      final body = backend
+          .calls('POST', ApiEndpoints.messages(5))
+          .single
+          .bodyText;
       expect(body, contains('name="contenu"'));
       expect('name="fichiers"'.allMatches(body), hasLength(2));
     });
@@ -307,7 +308,11 @@ void main() {
           200,
           Contract.response('Ouvrir une conversation privée', '200'),
         )
-        ..on('POST', ApiEndpoints.marquerLu(5), (_) => const FakeReply.noContent());
+        ..on(
+          'POST',
+          ApiEndpoints.marquerLu(5),
+          (_) => const FakeReply.noContent(),
+        );
       final repository = container.read(messagingRepositoryProvider);
 
       expect(await repository.nonLus(), 3);

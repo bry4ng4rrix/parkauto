@@ -51,7 +51,10 @@ class ApiError {
       erreur: erreur,
       message: message,
       details: rawDetails is List
-          ? [for (final d in rawDetails) if (d is String) d]
+          ? [
+              for (final d in rawDetails)
+                if (d is String) d,
+            ]
           : const [],
     );
   }

@@ -17,7 +17,9 @@ class BadgeIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = count == 0 ? tooltip : '$tooltip : $count non lu${count > 1 ? 's' : ''}';
+    final label = count == 0
+        ? tooltip
+        : '$tooltip : $count non lu${count > 1 ? 's' : ''}';
     return Semantics(
       button: true,
       label: label,

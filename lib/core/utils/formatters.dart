@@ -110,7 +110,6 @@ abstract final class AppFormat {
   static String plural(int count, String singular, [String? pluralForm]) =>
       '$count ${count > 1 ? (pluralForm ?? '${singular}s') : singular}';
 
-  static String _capitalize(String value) => value.isEmpty
-      ? value
-      : '${value[0].toUpperCase()}${value.substring(1)}';
+  static String _capitalize(String value) =>
+      value.isEmpty ? value : '${value[0].toUpperCase()}${value.substring(1)}';
 }

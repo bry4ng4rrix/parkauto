@@ -108,12 +108,12 @@ class ChatController extends AsyncNotifier<ChatState> {
       unawaited(statuses.cancel());
     });
 
-    final page = await _repository.messages(
-      idConversation,
-      limite: _pageSize,
-    );
+    final page = await _repository.messages(idConversation, limite: _pageSize);
     _recordPreview(page);
-    return ChatState(messages: _sorted(page), hasMore: page.length >= _pageSize);
+    return ChatState(
+      messages: _sorted(page),
+      hasMore: page.length >= _pageSize,
+    );
   }
 
   Future<void> loadOlder() async {
@@ -329,8 +329,11 @@ class ChatController extends AsyncNotifier<ChatState> {
     }
   }
 
-  static List<Message> _union(List<Message> a, List<Message> b) =>
-      _sorted({for (final m in [...a, ...b]) m.idMessage: m}.values);
+  static List<Message> _union(List<Message> a, List<Message> b) => _sorted(
+    {
+      for (final m in [...a, ...b]) m.idMessage: m,
+    }.values,
+  );
 
   static List<Message> _sorted(Iterable<Message> messages) =>
       messages.toList()..sort((x, y) => x.idMessage.compareTo(y.idMessage));

@@ -27,7 +27,11 @@ class Qualification {
       categorie: j.optString('categorie'),
       dateExpiration: j.optDate('dateExpiration'),
       joursRestants: j.optInt('joursRestants'),
-      niveau: j.reqEnum('niveau', NiveauEcheance.values, NiveauEcheance.inconnu),
+      niveau: j.reqEnum(
+        'niveau',
+        NiveauEcheance.values,
+        NiveauEcheance.inconnu,
+      ),
     );
   }
 

@@ -57,7 +57,11 @@ class Conversation {
     final j = JsonReader.of(json, 'Conversation');
     return Conversation(
       idConversation: j.reqInt('idConversation'),
-      type: j.reqEnum('type', TypeConversation.values, TypeConversation.inconnu),
+      type: j.reqEnum(
+        'type',
+        TypeConversation.values,
+        TypeConversation.inconnu,
+      ),
       titre: j.reqString('titre'),
       objetType: j.optString('objetType'),
       // Toujours `null` dans le contrat : lecture tolérante.
@@ -190,7 +194,10 @@ class UnreadMessagesResponse {
 /// à utiliser dans les [expireDansSecondes].
 @immutable
 class RealtimeTicket {
-  const RealtimeTicket({required this.ticket, required this.expireDansSecondes});
+  const RealtimeTicket({
+    required this.ticket,
+    required this.expireDansSecondes,
+  });
 
   factory RealtimeTicket.fromJson(Object? json) {
     final j = JsonReader.of(json, 'Ticket');

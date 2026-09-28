@@ -63,5 +63,11 @@ class FuelDraftNotifier extends Notifier<FuelDraft> {
 
   void update(FuelDraft draft) => state = draft;
 
+  // À partir de l'état courant (pas d'une copie capturée au build).
+  void setType(TypeApprovisionnement type) =>
+      state = state.copyWith(type: type);
+
+  void setDate(DateTime? date) => state = state.withDate(date);
+
   void clear() => state = const FuelDraft();
 }

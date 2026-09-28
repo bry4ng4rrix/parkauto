@@ -43,14 +43,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
     errorBuilder: (context, state) => const NotFoundScreen(),
     routes: [
-      GoRoute(
-        path: AppRoutes.splash,
-        builder: (_, _) => const SplashScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (_, _) => const LoginScreen(),
-      ),
+      GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
+      GoRoute(path: AppRoutes.login, builder: (_, _) => const LoginScreen()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
@@ -90,17 +84,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/mission/:id',
-        builder: (_, state) => _withId(
-          state,
-          (id) => MissionDetailScreen(idMission: id),
-        ),
+        builder: (_, state) =>
+            _withId(state, (id) => MissionDetailScreen(idMission: id)),
       ),
       GoRoute(
         path: '/chat/:id',
-        builder: (_, state) => _withId(
-          state,
-          (id) => ChatScreen(idConversation: id),
-        ),
+        builder: (_, state) =>
+            _withId(state, (id) => ChatScreen(idConversation: id)),
       ),
       GoRoute(
         path: AppRoutes.contacts,
@@ -125,16 +115,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.incidents,
         builder: (_, _) => const IncidentListScreen(),
         routes: [
-          GoRoute(
-            path: 'new',
-            builder: (_, _) => const IncidentCreateScreen(),
-          ),
+          GoRoute(path: 'new', builder: (_, _) => const IncidentCreateScreen()),
           GoRoute(
             path: ':id',
-            builder: (_, state) => _withId(
-              state,
-              (id) => IncidentDetailScreen(idIncident: id),
-            ),
+            builder: (_, state) =>
+                _withId(state, (id) => IncidentDetailScreen(idIncident: id)),
             routes: [
               GoRoute(
                 path: 'photos',

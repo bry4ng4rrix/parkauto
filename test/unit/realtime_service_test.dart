@@ -57,10 +57,7 @@ void main() {
       async.flushMicrotasks();
 
       expect(h.events[0], isA<RealtimePong>());
-      expect(
-        (h.events[1] as MessageRealtimeEvent).message.idMessage,
-        418,
-      );
+      expect((h.events[1] as MessageRealtimeEvent).message.idMessage, 418);
       h.service.dispose();
       async.flushMicrotasks();
     });

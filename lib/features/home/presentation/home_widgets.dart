@@ -73,7 +73,10 @@ class NoMissionCard extends StatelessWidget {
     return AppCard(
       child: Row(
         children: [
-          Icon(Icons.event_busy_rounded, color: theme.colorScheme.onSurfaceVariant),
+          Icon(
+            Icons.event_busy_rounded,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
           AppSpacing.gapMd,
           Expanded(
             child: Text(
@@ -113,10 +116,7 @@ class VehicleSummaryCard extends StatelessWidget {
             ),
             AppSpacing.gapMd,
             Expanded(
-              child: Text(
-                NoVehicle.message,
-                style: theme.textTheme.bodyMedium,
-              ),
+              child: Text(NoVehicle.message, style: theme.textTheme.bodyMedium),
             ),
           ],
         ),
@@ -163,7 +163,11 @@ class VehicleSummaryCard extends StatelessWidget {
           if (alertes > 0) ...[
             AppSpacing.gapMd,
             StatusBadge(
-              label: AppFormat.plural(alertes, 'alerte active', 'alertes actives'),
+              label: AppFormat.plural(
+                alertes,
+                'alerte active',
+                'alertes actives',
+              ),
               tone: Tone.danger,
               icon: Icons.warning_amber_rounded,
             ),
@@ -240,10 +244,22 @@ class QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = [
-      (Icons.local_gas_station_rounded, 'Plein', () => context.push(AppRoutes.fuelNew)),
-      (Icons.report_problem_rounded, 'Incident', () => context.push(AppRoutes.incidentNew)),
+      (
+        Icons.local_gas_station_rounded,
+        'Plein',
+        () => context.push(AppRoutes.fuelNew),
+      ),
+      (
+        Icons.report_problem_rounded,
+        'Incident',
+        () => context.push(AppRoutes.incidentNew),
+      ),
       (Icons.route_rounded, 'Missions', () => context.go(AppRoutes.missions)),
-      (Icons.chat_bubble_outline_rounded, 'Messages', () => context.go(AppRoutes.messages)),
+      (
+        Icons.chat_bubble_outline_rounded,
+        'Messages',
+        () => context.go(AppRoutes.messages),
+      ),
     ];
     return Row(
       children: [
@@ -305,9 +321,8 @@ class RecentActivity extends ConsumerWidget {
     final currency = ref.watch(appConfigProvider).currencyLabel;
     final theme = Theme.of(context);
 
-    Widget loadingOr(bool loading, Widget child) => loading
-        ? const Skeleton(child: SkeletonCard(lines: 1))
-        : child;
+    Widget loadingOr(bool loading, Widget child) =>
+        loading ? const Skeleton(child: SkeletonCard(lines: 1)) : child;
 
     final lastFuel = fuel.value?.value.firstOrNull;
     final lastIncident = incidents.value?.value.firstOrNull;

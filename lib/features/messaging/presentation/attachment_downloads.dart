@@ -44,7 +44,10 @@ class AttachmentDownloads extends Notifier<Map<int, double>> {
         await file.parent.create(recursive: true);
         await file.writeAsBytes(bytes, flush: true);
       }
-      final result = await OpenFilex.open(file.path, type: attachment.typeContenu);
+      final result = await OpenFilex.open(
+        file.path,
+        type: attachment.typeContenu,
+      );
       return switch (result.type) {
         ResultType.done => null,
         ResultType.noAppToOpen =>

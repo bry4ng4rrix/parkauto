@@ -19,7 +19,9 @@ void main() {
     expect(find.text('Le mot de passe est obligatoire'), findsOneWidget);
   });
 
-  testWidgets('identifiants refusés : message du backend affiché', (tester) async {
+  testWidgets('identifiants refusés : message du backend affiché', (
+    tester,
+  ) async {
     final backend = FakeBackend()
       ..json(
         'POST',
@@ -29,7 +31,10 @@ void main() {
       );
     await pumpScreen(tester, const LoginScreen(), backend: backend);
 
-    await tester.enterText(find.byType(TextFormField).at(0), 'tiana@parcauto.local');
+    await tester.enterText(
+      find.byType(TextFormField).at(0),
+      'tiana@parcauto.local',
+    );
     await tester.enterText(find.byType(TextFormField).at(1), 'mauvais');
     await tester.tap(find.text('Se connecter'));
     await settle(tester);
@@ -37,7 +42,9 @@ void main() {
     expect(find.text('Email ou mot de passe incorrect'), findsOneWidget);
   });
 
-  testWidgets('connexion réussie : session ouverte, appareil envoyé', (tester) async {
+  testWidgets('connexion réussie : session ouverte, appareil envoyé', (
+    tester,
+  ) async {
     final backend = FakeBackend()
       ..json(
         'POST',

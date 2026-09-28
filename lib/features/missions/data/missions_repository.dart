@@ -24,8 +24,7 @@ class MissionsNotifier extends CachedResourceNotifier<List<Mission>> {
   /// Remplace une mission par la version renvoyée par le serveur.
   void replace(Mission mission) => mutate(
     (missions) => [
-      for (final m in missions)
-        m.idMission == mission.idMission ? mission : m,
+      for (final m in missions) m.idMission == mission.idMission ? mission : m,
     ],
   );
 }

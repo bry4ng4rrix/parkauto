@@ -224,7 +224,8 @@ class UploadThumbnail extends StatelessWidget {
         child: SizedBox.square(
           dimension: 36,
           child: CircularProgressIndicator(
-            value: upload.status == UploadStatus.uploading && upload.progress > 0
+            value:
+                upload.status == UploadStatus.uploading && upload.progress > 0
                 ? upload.progress
                 : null,
             strokeWidth: 3,

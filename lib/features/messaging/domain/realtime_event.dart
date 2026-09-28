@@ -30,10 +30,16 @@ sealed class RealtimeEvent {
       return switch (type) {
         'PONG' => const RealtimePong(),
         'MESSAGE' => MessageRealtimeEvent.fromJson(json),
-        _ => UnknownRealtimeEvent(type: type is String ? type : null, raw: text),
+        _ => UnknownRealtimeEvent(
+          type: type is String ? type : null,
+          raw: text,
+        ),
       };
     } on ContractException {
-      return UnknownRealtimeEvent(type: type is String ? type : null, raw: text);
+      return UnknownRealtimeEvent(
+        type: type is String ? type : null,
+        raw: text,
+      );
     }
   }
 }

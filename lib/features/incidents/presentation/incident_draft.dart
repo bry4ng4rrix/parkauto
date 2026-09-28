@@ -58,7 +58,18 @@ class IncidentDraftNotifier extends Notifier<IncidentDraft> {
     return const IncidentDraft();
   }
 
-  void update(IncidentDraft draft) => state = draft;
+  // Chaque modification part de l'état courant (jamais d'une copie
+  // capturée lors d'un build précédent).
+  void setType(TypeIncident type) => state = state.copyWith(type: type);
+
+  void setGravite(Gravite gravite) => state = state.copyWith(gravite: gravite);
+
+  void setDescription(String text) => state = state.copyWith(description: text);
+
+  void setDate(DateTime? date) => state = state.withDate(date);
+
+  void setPhotos(List<LocalPhoto> photos) =>
+      state = state.copyWith(photos: photos);
 
   void clear() => state = const IncidentDraft();
 }

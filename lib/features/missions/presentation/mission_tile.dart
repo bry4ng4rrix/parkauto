@@ -84,8 +84,7 @@ class MissionTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (distance != null)
-                Text(AppFormat.km(distance), style: muted),
+              if (distance != null) Text(AppFormat.km(distance), style: muted),
             ],
           ),
           if (trailing case final action?) ...[AppSpacing.gapLg, action],

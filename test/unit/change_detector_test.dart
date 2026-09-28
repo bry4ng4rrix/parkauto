@@ -94,9 +94,10 @@ void main() {
       Contract.response('Profil', '200'),
     );
     expect(
-      ChangeDetector.qualificationExpiry(profile.qualification, now: now)
-          .single
-          .body,
+      ChangeDetector.qualificationExpiry(
+        profile.qualification,
+        now: now,
+      ).single.body,
       'Expire dans 17 jours',
     );
   });

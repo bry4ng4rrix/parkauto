@@ -84,7 +84,9 @@ class SyncService {
       await prefs.setString(
         key,
         jsonEncode({
-          for (final e in ChangeDetector.snapshotMissions(missions.value).entries)
+          for (final e in ChangeDetector.snapshotMissions(
+            missions.value,
+          ).entries)
             '${e.key}': e.value.toJson(),
         }),
       );
@@ -100,7 +102,9 @@ class SyncService {
       await prefs.setString(
         key,
         jsonEncode({
-          for (final e in ChangeDetector.snapshotIncidents(incidents.value).entries)
+          for (final e in ChangeDetector.snapshotIncidents(
+            incidents.value,
+          ).entries)
             '${e.key}': e.value,
         }),
       );
@@ -112,7 +116,9 @@ class SyncService {
       )) {
         found
           ..addAll(ChangeDetector.vehicleAlerts(details.alertes))
-          ..addAll(ChangeDetector.documentExpiries(details.documents, now: now));
+          ..addAll(
+            ChangeDetector.documentExpiries(details.documents, now: now),
+          );
       }
     }
 

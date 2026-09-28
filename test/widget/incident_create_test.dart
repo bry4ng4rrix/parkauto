@@ -47,7 +47,12 @@ void main() {
         201,
         Contract.response('Déclarer un incident', '201'),
       )
-      ..json('GET', ApiEndpoints.incidents, 200, Contract.response('Mes incidents', '200'));
+      ..json(
+        'GET',
+        ApiEndpoints.incidents,
+        200,
+        Contract.response('Mes incidents', '200'),
+      );
     await pumpScreen(
       tester,
       const IncidentCreateScreen(),

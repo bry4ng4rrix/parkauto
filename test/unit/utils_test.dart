@@ -21,7 +21,10 @@ void main() {
   group('Validations', () {
     test('kilométrage : obligatoire, positif, minimum', () {
       expect(Validators.kilometrage(''), 'Le kilométrage est obligatoire');
-      expect(Validators.kilometrage('0'), 'Le kilométrage doit être supérieur à 0');
+      expect(
+        Validators.kilometrage('0'),
+        'Le kilométrage doit être supérieur à 0',
+      );
       expect(Validators.kilometrage('84 360'), isNull);
       expect(
         Validators.kilometrage(
@@ -36,9 +39,14 @@ void main() {
     test('email et valeurs positives', () {
       expect(Validators.email('tiana@parcauto.local'), isNull);
       expect(Validators.email('tiana'), 'Adresse email invalide');
-      expect(Validators.positive('-1', label: 'La quantité'), 'Nombre invalide');
-      expect(Validators.positive('0', label: 'La quantité'),
-          'La quantité doit être supérieur à 0');
+      expect(
+        Validators.positive('-1', label: 'La quantité'),
+        'Nombre invalide',
+      );
+      expect(
+        Validators.positive('0', label: 'La quantité'),
+        'La quantité doit être supérieur à 0',
+      );
     });
   });
 

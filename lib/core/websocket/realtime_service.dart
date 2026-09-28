@@ -146,7 +146,10 @@ class RealtimeService<E> {
     if (!_isCurrent(generation)) return;
     final now = _clock();
     if (now.difference(_lastFrameAt) > silenceTimeout) {
-      _onDropped(generation, 'aucune trame depuis ${silenceTimeout.inSeconds} s');
+      _onDropped(
+        generation,
+        'aucune trame depuis ${silenceTimeout.inSeconds} s',
+      );
       return;
     }
     if (now.difference(_lastPingAt) >= pingInterval) sendPing();

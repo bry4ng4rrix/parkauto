@@ -10,7 +10,12 @@ String fileExtensionOf(String name) {
   return index < 0 ? '' : name.substring(index + 1).toLowerCase();
 }
 
-bool isImageFileName(String name) =>
-    const {'jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'}.contains(
-      fileExtensionOf(name),
-    );
+bool isImageFileName(String name) => const {
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'webp',
+  'heic',
+  'heif',
+}.contains(fileExtensionOf(name));

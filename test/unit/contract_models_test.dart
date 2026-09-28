@@ -102,8 +102,10 @@ void main() {
       expect(v.documents[3].joursRestants, -28);
       expect(v.alertes.first.type, TypeAlerte.perteConnexionGps);
       expect(v.alertes.first.priorite, Gravite.elevee);
-      expect(v.dernierPlein?.typeApprovisionnement,
-          TypeApprovisionnement.pleinComplet);
+      expect(
+        v.dernierPlein?.typeApprovisionnement,
+        TypeApprovisionnement.pleinComplet,
+      );
     });
 
     test('Missions : nullables et distance', () {

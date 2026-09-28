@@ -60,7 +60,8 @@ IconData _levelIcon(NiveauEcheance niveau) => switch (niveau) {
   NiveauEcheance.ok => Icons.verified_rounded,
   NiveauEcheance.bientot => Icons.schedule_rounded,
   NiveauEcheance.expire => Icons.gpp_bad_rounded,
-  NiveauEcheance.sansDate || NiveauEcheance.inconnu => Icons.help_outline_rounded,
+  NiveauEcheance.sansDate ||
+  NiveauEcheance.inconnu => Icons.help_outline_rounded,
 };
 
 /// Document du véhicule : l'échéance est rendue par la couleur, l'icône
@@ -124,7 +125,11 @@ class DocumentStatusCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                StatusBadge(label: document.niveau.label, tone: tone, dense: true),
+                StatusBadge(
+                  label: document.niveau.label,
+                  tone: tone,
+                  dense: true,
+                ),
                 if (days != null) ...[
                   const SizedBox(height: 4),
                   Text(
@@ -159,10 +164,7 @@ class VehicleAlertCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            _alertIcon(alert.type),
-            color: colors.foreground(tone),
-          ),
+          Icon(_alertIcon(alert.type), color: colors.foreground(tone)),
           AppSpacing.gapMd,
           Expanded(
             child: Column(

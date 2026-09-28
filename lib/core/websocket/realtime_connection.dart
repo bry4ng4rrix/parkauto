@@ -15,7 +15,10 @@ typedef RealtimeConnector =
     Future<RealtimeConnection> Function(Uri uri, Duration timeout);
 
 /// Implémentation `dart:io`.
-Future<RealtimeConnection> ioRealtimeConnector(Uri uri, Duration timeout) async {
+Future<RealtimeConnection> ioRealtimeConnector(
+  Uri uri,
+  Duration timeout,
+) async {
   final channel = IOWebSocketChannel.connect(uri, connectTimeout: timeout);
   await channel.ready;
   return _IoConnection(channel);

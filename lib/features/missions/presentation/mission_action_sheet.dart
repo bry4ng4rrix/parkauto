@@ -101,7 +101,10 @@ class _MissionActionSheetState extends ConsumerState<_MissionActionSheet> {
   /// Pré-remplissage avec la meilleure valeur connue.
   void _prefill(double? vehicleKm) {
     if (_km.text.isNotEmpty) return;
-    final candidates = [vehicleKm, _mission.kilometrageDepart].whereType<double>();
+    final candidates = [
+      vehicleKm,
+      _mission.kilometrageDepart,
+    ].whereType<double>();
     if (candidates.isEmpty) return;
     _km.text = DecimalInput.format(candidates.reduce((a, b) => a > b ? a : b));
   }

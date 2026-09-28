@@ -13,5 +13,4 @@ AppException asAppException(Object error) => switch (error) {
 /// Message à afficher à l'utilisateur. Jamais de trace technique.
 String userMessageOf(Object error) => asAppException(error).userMessage;
 
-bool isOfflineError(Object error) =>
-    asAppException(error) is NetworkException;
+bool isOfflineError(Object error) => asAppException(error) is NetworkException;

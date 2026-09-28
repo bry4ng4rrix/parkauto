@@ -23,7 +23,9 @@ class LocalPhoto {
   LocalPhoto withCaption(String? caption) => LocalPhoto(
     path: path,
     size: size,
-    legende: (caption == null || caption.trim().isEmpty) ? null : caption.trim(),
+    legende: (caption == null || caption.trim().isEmpty)
+        ? null
+        : caption.trim(),
   );
 }
 
@@ -47,10 +49,7 @@ class PhotoSelection extends StatelessWidget {
 
   Future<void> _pick(BuildContext context, ImageSource source) async {
     final result = source == ImageSource.camera
-        ? await CameraCapture.capture(
-            context,
-            maxBytes: Incident.maxPhotoBytes,
-          )
+        ? await CameraCapture.capture(context, maxBytes: Incident.maxPhotoBytes)
         : await PhotoPicker(
             maxBytes: Incident.maxPhotoBytes,
           ).pick(source: source, remaining: remaining);

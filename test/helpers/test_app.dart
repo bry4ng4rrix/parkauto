@@ -63,7 +63,8 @@ class InMemorySessionStore implements SessionStore {
 }
 
 class FakeLocalNotifications implements LocalNotificationService {
-  final shown = <({int id, String title, String body, NotificationPayload payload})>[];
+  final shown =
+      <({int id, String title, String body, NotificationPayload payload})>[];
   final _taps = StreamController<NotificationPayload>.broadcast();
 
   @override

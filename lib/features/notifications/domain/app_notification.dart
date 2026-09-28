@@ -75,7 +75,10 @@ class AppNotification {
     final title = json['title'];
     final body = json['body'];
     final createdAt = DateTime.tryParse('${json['createdAt']}');
-    if (id is! String || title is! String || body is! String || createdAt == null) {
+    if (id is! String ||
+        title is! String ||
+        body is! String ||
+        createdAt == null) {
       return null;
     }
     final kind = json['kind'];

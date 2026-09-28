@@ -26,7 +26,11 @@ class Incident {
       idIncident: j.reqInt('idIncident'),
       type: j.reqEnum('type', TypeIncident.values, TypeIncident.inconnu),
       gravite: j.reqEnum('gravite', Gravite.values, Gravite.inconnu),
-      statut: j.reqEnum('statut', StatutIncident.values, StatutIncident.inconnu),
+      statut: j.reqEnum(
+        'statut',
+        StatutIncident.values,
+        StatutIncident.inconnu,
+      ),
       description: j.reqString('description'),
       dateSurvenue: j.reqDateTime('dateSurvenue'),
       idEngin: j.optInt('idEngin'),

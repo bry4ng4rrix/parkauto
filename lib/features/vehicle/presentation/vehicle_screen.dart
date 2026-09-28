@@ -179,9 +179,7 @@ class _VehicleDetails extends StatelessWidget {
           ),
         ],
         AppSpacing.gapXxl,
-        SectionHeader(
-          title: 'Alertes (${details.alertes.length})',
-        ),
+        SectionHeader(title: 'Alertes (${details.alertes.length})'),
         if (details.alertes.isEmpty)
           const _EmptyLine(
             icon: Icons.check_circle_outline_rounded,

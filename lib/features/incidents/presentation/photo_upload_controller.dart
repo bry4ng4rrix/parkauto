@@ -61,7 +61,8 @@ class PhotoUploadController extends Notifier<List<PhotoUpload>> {
   List<PhotoUpload> build() => const [];
 
   bool get isBusy => state.any(
-    (u) => u.status == UploadStatus.waiting || u.status == UploadStatus.uploading,
+    (u) =>
+        u.status == UploadStatus.waiting || u.status == UploadStatus.uploading,
   );
 
   void enqueue(List<({String path, String? legende})> photos) {
@@ -151,17 +152,13 @@ class PhotoUploadController extends Notifier<List<PhotoUpload>> {
 
   void _update(String localId, PhotoUpload Function(PhotoUpload) change) {
     if (!ref.mounted) return;
-    state = [
-      for (final u in state) u.localId == localId ? change(u) : u,
-    ];
+    state = [for (final u in state) u.localId == localId ? change(u) : u];
   }
 }
 
 /// Photos encore possibles pour un incident (limite du backend : 10).
-int remainingPhotoSlots({
-  required int alreadyUploaded,
-  required int pending,
-}) => (Incident.maxPhotos - alreadyUploaded - pending).clamp(
-  0,
-  Incident.maxPhotos,
-);
+int remainingPhotoSlots({required int alreadyUploaded, required int pending}) =>
+    (Incident.maxPhotos - alreadyUploaded - pending).clamp(
+      0,
+      Incident.maxPhotos,
+    );

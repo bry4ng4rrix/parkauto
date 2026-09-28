@@ -55,9 +55,9 @@ class _IncidentPhotosScreenState extends ConsumerState<IncidentPhotosScreen> {
 
   void _send() {
     if (_selection.isEmpty) return;
-    ref
-        .read(photoUploadProvider(widget.idIncident).notifier)
-        .enqueue([for (final p in _selection) (path: p.path, legende: p.legende)]);
+    ref.read(photoUploadProvider(widget.idIncident).notifier).enqueue([
+      for (final p in _selection) (path: p.path, legende: p.legende),
+    ]);
     final count = _selection.length;
     setState(() => _selection = const []);
     showInfoMessage(
@@ -70,7 +70,8 @@ class _IncidentPhotosScreenState extends ConsumerState<IncidentPhotosScreen> {
   Widget build(BuildContext context) {
     final id = widget.idIncident;
     Incident? incident;
-    for (final i in ref.watch(incidentsProvider).value?.value ?? const <Incident>[]) {
+    for (final i
+        in ref.watch(incidentsProvider).value?.value ?? const <Incident>[]) {
       if (i.idIncident == id) incident = i;
     }
     final photos = ref.watch(incidentPhotosProvider(id));
@@ -131,15 +132,20 @@ class _IncidentPhotosScreenState extends ConsumerState<IncidentPhotosScreen> {
                               for (final upload in active)
                                 UploadThumbnail(
                                   upload: upload,
-                                  onRetry: () => controller.retry(upload.localId),
+                                  onRetry: () =>
+                                      controller.retry(upload.localId),
                                   onRemove: () =>
                                       controller.remove(upload.localId),
                                 ),
                               for (final photo in list)
                                 PhotoThumbnail(
-                                  image: ApiImage(photo.url, api).thumbnail(300),
+                                  image: ApiImage(
+                                    photo.url,
+                                    api,
+                                  ).thumbnail(300),
                                   semanticLabel:
-                                      photo.legende ?? 'Photo ajoutée le '
+                                      photo.legende ??
+                                      'Photo ajoutée le '
                                           '${AppFormat.dateTime(photo.dateAjout)}',
                                   onTap: () => PhotoViewer.open(
                                     context,

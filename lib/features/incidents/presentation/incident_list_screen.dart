@@ -40,7 +40,8 @@ class IncidentListScreen extends ConsumerWidget {
           child: const EmptyState(
             icon: Icons.verified_user_outlined,
             title: 'Aucun incident déclaré',
-            message: 'Panne, accident ou vol : déclarez-le ici, photos à '
+            message:
+                'Panne, accident ou vol : déclarez-le ici, photos à '
                 "l'appui.",
           ),
         ),

@@ -44,10 +44,11 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
 
   FuelDraft get _draft => ref.read(fuelDraftProvider);
 
-  VehiculeSummary? get _vehicle => switch (ref.read(vehicleProvider).value?.value) {
-    VehicleAssigned(:final details) => details.vehicule,
-    _ => null,
-  };
+  VehiculeSummary? get _vehicle =>
+      switch (ref.read(vehicleProvider).value?.value) {
+        VehicleAssigned(:final details) => details.vehicule,
+        _ => null,
+      };
 
   @override
   void initState() {
@@ -87,14 +88,16 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
   }
 
   void _saveDraft() {
-    ref.read(fuelDraftProvider.notifier).update(
-      _draft.copyWith(
-        kilometrage: _km.text,
-        litres: _litres.text,
-        prix: _prix.text,
-        station: _station.text,
-      ),
-    );
+    ref
+        .read(fuelDraftProvider.notifier)
+        .update(
+          _draft.copyWith(
+            kilometrage: _km.text,
+            litres: _litres.text,
+            prix: _prix.text,
+            station: _station.text,
+          ),
+        );
     setState(() {}); // Aperçu du montant.
   }
 
@@ -122,7 +125,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
     );
     ref
         .read(fuelDraftProvider.notifier)
-        .update(_draft.withDate(picked.isAfter(now) ? now : picked));
+        .setDate(picked.isAfter(now) ? now : picked);
   }
 
   Future<void> _submit() async {
@@ -143,7 +146,8 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
       dateHeure: draft.dateHeure,
     );
     final knownIds = {
-      for (final e in ref.read(fuelEntriesProvider).value?.value ?? <FuelEntry>[])
+      for (final e
+          in ref.read(fuelEntriesProvider).value?.value ?? <FuelEntry>[])
         e.idCarburant,
     };
 
@@ -191,8 +195,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
   Widget build(BuildContext context) {
     final draft = ref.watch(fuelDraftProvider);
     final currency = ref.watch(appConfigProvider).currencyLabel;
-    final noVehicle =
-        ref.watch(vehicleProvider).value?.value is NoVehicle;
+    final noVehicle = ref.watch(vehicleProvider).value?.value is NoVehicle;
     final vehicleKm = _vehicle?.kilometrage;
     final fieldErrors = switch (_error) {
       ApiException(:final fieldErrors) => fieldErrors,
@@ -249,7 +252,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
                           ? null
                           : (s) => ref
                                 .read(fuelDraftProvider.notifier)
-                                .update(draft.copyWith(type: s.first)),
+                                .setType(s.first),
                     ),
                     AppSpacing.gapXl,
                     TextFormField(
@@ -338,7 +341,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
                                 icon: const Icon(Icons.close_rounded),
                                 onPressed: () => ref
                                     .read(fuelDraftProvider.notifier)
-                                    .update(draft.withDate(null)),
+                                    .setDate(null),
                               ),
                         onTap: _submitting ? null : _pickDate,
                       ),

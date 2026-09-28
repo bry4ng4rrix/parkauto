@@ -98,7 +98,8 @@ class _MissionListScreenState extends ConsumerState<MissionListScreen> {
                       title: _filter == MissionFilter.toutes
                           ? 'Aucune mission'
                           : 'Aucune mission ${_filter.label.toLowerCase()}',
-                      message: 'Les missions qui vous sont attribuées '
+                      message:
+                          'Les missions qui vous sont attribuées '
                           'apparaîtront ici.',
                     ),
                   )

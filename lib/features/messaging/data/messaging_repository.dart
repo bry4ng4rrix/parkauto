@@ -26,12 +26,11 @@ class MessagingRepository {
       _api.get(ApiEndpoints.contacts, ConversationParticipant.listFromJson);
 
   /// `POST /api/messagerie/conversations/privee`.
-  Future<Conversation> ouvrirConversationPrivee(int idUtilisateur) =>
-      _api.post(
-        ApiEndpoints.conversationPrivee,
-        Conversation.fromJson,
-        body: {'idUtilisateur': idUtilisateur},
-      );
+  Future<Conversation> ouvrirConversationPrivee(int idUtilisateur) => _api.post(
+    ApiEndpoints.conversationPrivee,
+    Conversation.fromJson,
+    body: {'idUtilisateur': idUtilisateur},
+  );
 
   /// Du plus ancien au plus récent ; page précédente via [avant].
   Future<List<Message>> messages(

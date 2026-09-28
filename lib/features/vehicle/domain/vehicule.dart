@@ -35,7 +35,11 @@ class VehiculeSummary {
       statut: j.reqEnum('statut', StatutEngin.values, StatutEngin.inconnu),
       kilometrage: j.optDouble('kilometrage'),
       compteurHeures: j.optDouble('compteurHeures'),
-      source: j.reqEnum('source', SourceVehicule.values, SourceVehicule.inconnu),
+      source: j.reqEnum(
+        'source',
+        SourceVehicule.values,
+        SourceVehicule.inconnu,
+      ),
     );
   }
 
@@ -53,7 +57,10 @@ class VehiculeSummary {
   bool get isEngin => categorie == CategorieEngin.enginChantier;
 
   String? get marqueModele {
-    final parts = [marque, modele].whereType<String>().where((s) => s.isNotEmpty);
+    final parts = [
+      marque,
+      modele,
+    ].whereType<String>().where((s) => s.isNotEmpty);
     return parts.isEmpty ? null : parts.join(' ');
   }
 }
@@ -75,7 +82,11 @@ class VehiculeDocument {
       numeroReference: j.optString('numeroReference'),
       dateExpiration: j.optDate('dateExpiration'),
       joursRestants: j.optInt('joursRestants'),
-      niveau: j.reqEnum('niveau', NiveauEcheance.values, NiveauEcheance.inconnu),
+      niveau: j.reqEnum(
+        'niveau',
+        NiveauEcheance.values,
+        NiveauEcheance.inconnu,
+      ),
     );
   }
 

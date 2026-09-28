@@ -20,9 +20,15 @@ void main() {
       final session = Session.fromAuth(auth, now: now);
 
       expect(session.idUtilisateur, 27);
-      expect(session.accessExpiresAt, now.add(const Duration(minutes: 59, seconds: 30)));
+      expect(
+        session.accessExpiresAt,
+        now.add(const Duration(minutes: 59, seconds: 30)),
+      );
       expect(session.isAccessExpired(now), isFalse);
-      expect(session.isAccessExpired(now.add(const Duration(hours: 1))), isTrue);
+      expect(
+        session.isAccessExpired(now.add(const Duration(hours: 1))),
+        isTrue,
+      );
 
       final restored = Session.fromStorage(session.toStorage());
       expect(restored?.jetonRafraichissement, auth.jetonRafraichissement);
@@ -38,44 +44,55 @@ void main() {
       );
     });
 
-    test('restauration : jeton de rafraîchissement expiré → connexion', () async {
-      final expired = Session(
-        jetonAcces: 'a',
-        jetonRafraichissement: 'r',
-        accessExpiresAt: DateTime.utc(2026),
-        refreshExpiresAt: DateTime.utc(2026),
-        idConducteur: 12,
-        idUtilisateur: 27,
-        nomComplet: 'Tiana RABE',
-        role: 'CONDUCTEUR',
-      );
-      final container = await createContainer(
-        backend: FakeBackend(),
-        session: expired,
-      );
-      final state = container.read(sessionControllerProvider);
-      expect(state.status, AuthStatus.unauthenticated);
-      expect(state.reason, SignOutReason.sessionExpired);
-    });
+    test(
+      'restauration : jeton de rafraîchissement expiré → connexion',
+      () async {
+        final expired = Session(
+          jetonAcces: 'a',
+          jetonRafraichissement: 'r',
+          accessExpiresAt: DateTime.utc(2026),
+          refreshExpiresAt: DateTime.utc(2026),
+          idConducteur: 12,
+          idUtilisateur: 27,
+          nomComplet: 'Tiana RABE',
+          role: 'CONDUCTEUR',
+        );
+        final container = await createContainer(
+          backend: FakeBackend(),
+          session: expired,
+        );
+        final state = container.read(sessionControllerProvider);
+        expect(state.status, AuthStatus.unauthenticated);
+        expect(state.reason, SignOutReason.sessionExpired);
+      },
+    );
 
-    test('restauration hors ligne : session valide sans appel réseau', () async {
-      final backend = FakeBackend();
-      final container = await createContainer(
-        backend: backend,
-        session: testSession(accessExpired: true),
-      );
-      expect(
-        container.read(sessionControllerProvider).status,
-        AuthStatus.authenticated,
-      );
-      expect(backend.requests, isEmpty);
-    });
+    test(
+      'restauration hors ligne : session valide sans appel réseau',
+      () async {
+        final backend = FakeBackend();
+        final container = await createContainer(
+          backend: backend,
+          session: testSession(accessExpired: true),
+        );
+        expect(
+          container.read(sessionControllerProvider).status,
+          AuthStatus.authenticated,
+        );
+        expect(backend.requests, isEmpty);
+      },
+    );
   });
 
   group('Cache hors connexion', () {
     test('réseau d’abord, puis données en cache si le réseau tombe', () async {
       final backend = FakeBackend()
-        ..json('GET', ApiEndpoints.missions, 200, Contract.response('Mes missions', '200'));
+        ..json(
+          'GET',
+          ApiEndpoints.missions,
+          200,
+          Contract.response('Mes missions', '200'),
+        );
       final container = await createContainer(
         backend: backend,
         session: testSession(),
@@ -85,7 +102,11 @@ void main() {
       expect(first.fromCache, isFalse);
       expect(first.value, hasLength(5));
 
-      backend.on('GET', ApiEndpoints.missions, (_) => const FakeReply.networkError());
+      backend.on(
+        'GET',
+        ApiEndpoints.missions,
+        (_) => const FakeReply.networkError(),
+      );
       final error = await container.read(missionsProvider.notifier).refresh();
       expect(error, isA<NetworkException>());
       final kept = container.read(missionsProvider).value;
@@ -95,12 +116,21 @@ void main() {
 
     test('redémarrage hors ligne : le cache est affiché', () async {
       final backend = FakeBackend()
-        ..json('GET', ApiEndpoints.missions, 200, Contract.response('Mes missions', '200'));
+        ..json(
+          'GET',
+          ApiEndpoints.missions,
+          200,
+          Contract.response('Mes missions', '200'),
+        );
       final session = testSession();
       final online = await createContainer(backend: backend, session: session);
       await online.read(missionsProvider.future);
 
-      backend.on('GET', ApiEndpoints.missions, (_) => const FakeReply.networkError());
+      backend.on(
+        'GET',
+        ApiEndpoints.missions,
+        (_) => const FakeReply.networkError(),
+      );
       // Même stockage de préférences, nouveau conteneur (redémarrage).
       final offline = await createContainer(
         backend: backend,
@@ -116,7 +146,12 @@ void main() {
 
     test('404 véhicule : donnée « aucun véhicule », pas une erreur', () async {
       final backend = FakeBackend()
-        ..json('GET', ApiEndpoints.vehicule, 404, Contract.response('Mon véhicule', '404'));
+        ..json(
+          'GET',
+          ApiEndpoints.vehicule,
+          404,
+          Contract.response('Mon véhicule', '404'),
+        );
       final container = await createContainer(
         backend: backend,
         session: testSession(),

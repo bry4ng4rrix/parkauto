@@ -10,10 +10,9 @@ class JsonReader {
   factory JsonReader.of(Object? data, String context) {
     if (data is Map<String, Object?>) return JsonReader(data, context);
     if (data is Map) {
-      return JsonReader(
-        {for (final e in data.entries) '${e.key}': e.value},
-        context,
-      );
+      return JsonReader({
+        for (final e in data.entries) '${e.key}': e.value,
+      }, context);
     }
     throw ContractException(context, 'objet JSON attendu, reçu ${_kind(data)}');
   }

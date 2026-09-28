@@ -23,7 +23,10 @@ class NotificationStore {
       if (raw == null) return const [];
       final decoded = jsonDecode(raw);
       if (decoded is! List) return const [];
-      return decoded.map(AppNotification.fromJson).whereType<AppNotification>().toList();
+      return decoded
+          .map(AppNotification.fromJson)
+          .whereType<AppNotification>()
+          .toList();
     } on Exception catch (e) {
       AppLogger.warning('Notifications', 'Lecture impossible', e);
       return const [];

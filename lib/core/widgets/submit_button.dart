@@ -42,7 +42,10 @@ class SubmitButton extends StatelessWidget {
               key: const ValueKey('label'),
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icon != null) ...[Icon(icon, size: 20), const SizedBox(width: 8)],
+                if (icon != null) ...[
+                  Icon(icon, size: 20),
+                  const SizedBox(width: 8),
+                ],
                 Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
               ],
             ),

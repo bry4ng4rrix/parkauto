@@ -23,7 +23,11 @@ void main() {
 
   setUp(() {
     backend = FakeBackend()
-      ..on('POST', ApiEndpoints.deconnexion, (_) => const FakeReply.noContent());
+      ..on(
+        'POST',
+        ApiEndpoints.deconnexion,
+        (_) => const FakeReply.noContent(),
+      );
   });
 
   test('ajoute le jeton Bearer', () async {
@@ -47,7 +51,12 @@ void main() {
       session: testSession(accessExpired: true),
     );
     backend
-      ..json('POST', ApiEndpoints.rafraichir, 200, _tokens('access-2', 'refresh-2'))
+      ..json(
+        'POST',
+        ApiEndpoints.rafraichir,
+        200,
+        _tokens('access-2', 'refresh-2'),
+      )
       ..json('GET', ApiEndpoints.moi, 200, <String, Object?>{});
 
     await container.read(apiClientProvider).get(ApiEndpoints.moi, _identity);
@@ -70,7 +79,12 @@ void main() {
       session: testSession(),
     );
     backend
-      ..json('POST', ApiEndpoints.rafraichir, 200, _tokens('access-2', 'refresh-2'))
+      ..json(
+        'POST',
+        ApiEndpoints.rafraichir,
+        200,
+        _tokens('access-2', 'refresh-2'),
+      )
       ..on(
         'GET',
         ApiEndpoints.moi,
@@ -85,10 +99,10 @@ void main() {
 
     expect(result, {'ok': true});
     expect(backend.calls('POST', ApiEndpoints.rafraichir), hasLength(1));
-    expect(
-      backend.calls('GET', ApiEndpoints.moi).map((r) => r.authorization),
-      ['Bearer access-1', 'Bearer access-2'],
-    );
+    expect(backend.calls('GET', ApiEndpoints.moi).map((r) => r.authorization), [
+      'Bearer access-1',
+      'Bearer access-2',
+    ]);
     expect(
       container.read(sessionControllerProvider).session?.jetonAcces,
       'access-2',
@@ -134,42 +148,47 @@ void main() {
       session: testSession(),
     );
     backend
-      ..json('POST', ApiEndpoints.rafraichir, 200, _tokens('access-2', 'refresh-2'))
-      ..json('GET', ApiEndpoints.moi, 401, _unauthorized());
-
-    await expectLater(
-      container.read(apiClientProvider).get(ApiEndpoints.moi, _identity),
-      throwsA(
-        isA<ApiException>().having((e) => e.statusCode, 'statut', 401),
-      ),
-    );
-    expect(backend.calls('GET', ApiEndpoints.moi), hasLength(2));
-    expect(backend.calls('POST', ApiEndpoints.rafraichir), hasLength(1));
-  });
-
-  test('rafraîchissement refusé : session expirée, retour à la connexion',
-      () async {
-    final container = await createContainer(
-      backend: backend,
-      session: testSession(),
-    );
-    backend
       ..json(
         'POST',
         ApiEndpoints.rafraichir,
-        401,
-        Contract.response('Rafraîchir les jetons', '401'),
+        200,
+        _tokens('access-2', 'refresh-2'),
       )
       ..json('GET', ApiEndpoints.moi, 401, _unauthorized());
 
     await expectLater(
       container.read(apiClientProvider).get(ApiEndpoints.moi, _identity),
-      throwsA(isA<SessionExpiredException>()),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'statut', 401)),
     );
-    final state = container.read(sessionControllerProvider);
-    expect(state.status, AuthStatus.unauthenticated);
-    expect(state.reason, SignOutReason.sessionExpired);
+    expect(backend.calls('GET', ApiEndpoints.moi), hasLength(2));
+    expect(backend.calls('POST', ApiEndpoints.rafraichir), hasLength(1));
   });
+
+  test(
+    'rafraîchissement refusé : session expirée, retour à la connexion',
+    () async {
+      final container = await createContainer(
+        backend: backend,
+        session: testSession(),
+      );
+      backend
+        ..json(
+          'POST',
+          ApiEndpoints.rafraichir,
+          401,
+          Contract.response('Rafraîchir les jetons', '401'),
+        )
+        ..json('GET', ApiEndpoints.moi, 401, _unauthorized());
+
+      await expectLater(
+        container.read(apiClientProvider).get(ApiEndpoints.moi, _identity),
+        throwsA(isA<SessionExpiredException>()),
+      );
+      final state = container.read(sessionControllerProvider);
+      expect(state.status, AuthStatus.unauthenticated);
+      expect(state.reason, SignOutReason.sessionExpired);
+    },
+  );
 
   test('rafraîchissement impossible (réseau) : session conservée', () async {
     final container = await createContainer(
@@ -177,7 +196,11 @@ void main() {
       session: testSession(),
     );
     backend
-      ..on('POST', ApiEndpoints.rafraichir, (_) => const FakeReply.networkError())
+      ..on(
+        'POST',
+        ApiEndpoints.rafraichir,
+        (_) => const FakeReply.networkError(),
+      )
       ..json('GET', ApiEndpoints.moi, 401, _unauthorized());
 
     await expectLater(
@@ -197,7 +220,12 @@ void main() {
     );
     final path = ApiEndpoints.incidentPhotos(57);
     backend
-      ..json('POST', ApiEndpoints.rafraichir, 200, _tokens('access-2', 'refresh-2'))
+      ..json(
+        'POST',
+        ApiEndpoints.rafraichir,
+        200,
+        _tokens('access-2', 'refresh-2'),
+      )
       ..on(
         'POST',
         path,

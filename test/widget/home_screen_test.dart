@@ -9,9 +9,24 @@ import '../helpers/test_app.dart';
 
 FakeBackend _backend(Object? moi, {int moiStatus = 200}) => FakeBackend()
   ..json('GET', ApiEndpoints.moi, moiStatus, moi)
-  ..json('GET', ApiEndpoints.pleins, 200, Contract.response('Mes saisies carburant', '200'))
-  ..json('GET', ApiEndpoints.incidents, 200, Contract.response('Mes incidents', '200'))
-  ..json('GET', ApiEndpoints.vehicule, 200, Contract.response('Mon véhicule', '200'))
+  ..json(
+    'GET',
+    ApiEndpoints.pleins,
+    200,
+    Contract.response('Mes saisies carburant', '200'),
+  )
+  ..json(
+    'GET',
+    ApiEndpoints.incidents,
+    200,
+    Contract.response('Mes incidents', '200'),
+  )
+  ..json(
+    'GET',
+    ApiEndpoints.vehicule,
+    200,
+    Contract.response('Mon véhicule', '200'),
+  )
   ..json('GET', ApiEndpoints.nonLus, 200, {'total': 3});
 
 void main() {
@@ -30,7 +45,10 @@ void main() {
     expect(find.text('1234 TAB'), findsOneWidget);
     expect(find.text('2 alertes actives'), findsOneWidget);
     expect(find.text('2 missions à venir'), findsOneWidget);
-    expect(find.textContaining('Permis de conduire · Expire dans 17'), findsOneWidget);
+    expect(
+      find.textContaining('Permis de conduire · Expire dans 17'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('sans véhicule ni mission', (tester) async {

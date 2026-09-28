@@ -68,7 +68,9 @@ class AppCoordinator {
     _subscriptions
       ..add(realtime.events.listen(_onRealtimeEvent))
       ..add(realtime.statusChanges.listen(_onRealtimeStatus))
-      ..add(_ref.read(localNotificationServiceProvider).taps.listen(openPayload));
+      ..add(
+        _ref.read(localNotificationServiceProvider).taps.listen(openPayload),
+      );
   }
 
   /// Appelé par `AppEffects` à chaque changement de cycle de vie.
@@ -237,9 +239,8 @@ class AppCoordinator {
           ),
           action: SnackBarAction(
             label: 'Ouvrir',
-            onPressed: () => _ref
-                .read(routerProvider)
-                .push(AppRoutes.chat(idConversation)),
+            onPressed: () =>
+                _ref.read(routerProvider).push(AppRoutes.chat(idConversation)),
           ),
         ),
       );

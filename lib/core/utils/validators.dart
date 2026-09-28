@@ -38,10 +38,7 @@ abstract final class Validators {
     double? minimum,
     String minimumLabel = 'au kilométrage actuel',
   }) {
-    final missing = required(
-      value,
-      message: 'Le kilométrage est obligatoire',
-    );
+    final missing = required(value, message: 'Le kilométrage est obligatoire');
     if (missing != null) return missing;
     final number = DecimalInput.parse(value);
     if (number == null) return 'Kilométrage invalide';

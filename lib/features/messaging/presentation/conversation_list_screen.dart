@@ -115,8 +115,7 @@ class ConversationTile extends ConsumerWidget {
         conversation.type.isGroup
             ? '${message.auteur.nomComplet.split(' ').first} : ${message.preview}'
             : message.preview,
-      _ =>
-        conversation.interlocuteur?.roleLabel ?? conversation.type.label,
+      _ => conversation.interlocuteur?.roleLabel ?? conversation.type.label,
     };
     return Semantics(
       button: true,

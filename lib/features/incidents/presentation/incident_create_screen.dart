@@ -44,13 +44,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
     super.initState();
     _description = TextEditingController(
       text: ref.read(incidentDraftProvider).description,
-    )..addListener(
-        () => _draftNotifier.update(
-          ref.read(incidentDraftProvider).copyWith(
-            description: _description.text,
-          ),
-        ),
-      );
+    )..addListener(() => _draftNotifier.setDescription(_description.text));
   }
 
   @override
@@ -82,9 +76,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
       time.hour,
       time.minute,
     );
-    _draftNotifier.update(
-      ref.read(incidentDraftProvider).withDate(picked.isAfter(now) ? now : picked),
-    );
+    _draftNotifier.setDate(picked.isAfter(now) ? now : picked);
   }
 
   Future<void> _submit() async {
@@ -129,9 +121,9 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
   }
 
   void _onCreated(Incident incident, List<LocalPhoto> photos) {
-    ref
-        .read(photoUploadProvider(incident.idIncident).notifier)
-        .enqueue([for (final p in photos) (path: p.path, legende: p.legende)]);
+    ref.read(photoUploadProvider(incident.idIncident).notifier).enqueue([
+      for (final p in photos) (path: p.path, legende: p.legende),
+    ]);
     _draftNotifier.clear();
     if (!mounted) return;
     showSuccessMessage(
@@ -183,7 +175,9 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                       spacing: AppSpacing.sm,
                       runSpacing: AppSpacing.sm,
                       children: [
-                        for (final type in ApiEnum.selectable(TypeIncident.values))
+                        for (final type in ApiEnum.selectable(
+                          TypeIncident.values,
+                        ))
                           ChoiceChip(
                             avatar: Icon(incidentTypeIcon(type), size: 18),
                             label: Text(type.label),
@@ -191,9 +185,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                             showCheckmark: false,
                             onSelected: _submitting
                                 ? null
-                                : (_) => _draftNotifier.update(
-                                    draft.copyWith(type: type),
-                                  ),
+                                : (_) => _draftNotifier.setType(type),
                           ),
                       ],
                     ),
@@ -202,11 +194,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                     AppSpacing.gapSm,
                     _GravitePicker(
                       value: draft.gravite,
-                      onChanged: _submitting
-                          ? null
-                          : (g) => _draftNotifier.update(
-                              draft.copyWith(gravite: g),
-                            ),
+                      onChanged: _submitting ? null : _draftNotifier.setGravite,
                     ),
                     AppSpacing.gapXl,
                     TextFormField(
@@ -218,7 +206,8 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                         labelText: 'Description',
-                        hintText: 'Ex. Voyant moteur allumé, perte de puissance',
+                        hintText:
+                            'Ex. Voyant moteur allumé, perte de puissance',
                         alignLabelWithHint: true,
                         errorText: fieldErrors['description'],
                       ),
@@ -242,8 +231,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                             : IconButton(
                                 tooltip: 'Revenir à maintenant',
                                 icon: const Icon(Icons.close_rounded),
-                                onPressed: () =>
-                                    _draftNotifier.update(draft.withDate(null)),
+                                onPressed: () => _draftNotifier.setDate(null),
                               ),
                         onTap: _submitting ? null : _pickDate,
                       ),
@@ -261,8 +249,7 @@ class _IncidentCreateScreenState extends ConsumerState<IncidentCreateScreen> {
                         alreadyUploaded: 0,
                         pending: draft.photos.length,
                       ),
-                      onChanged: (photos) =>
-                          _draftNotifier.update(draft.copyWith(photos: photos)),
+                      onChanged: (photos) => _draftNotifier.setPhotos(photos),
                     ),
                     AppSpacing.gapXxl,
                     SubmitButton(

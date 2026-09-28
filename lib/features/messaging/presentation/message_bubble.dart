@@ -89,7 +89,9 @@ class PendingBubble extends StatelessWidget {
             footer: _Footer(
               time: failed ? 'Non envoyé' : 'Envoi…',
               mine: true,
-              icon: failed ? Icons.error_outline_rounded : Icons.schedule_rounded,
+              icon: failed
+                  ? Icons.error_outline_rounded
+                  : Icons.schedule_rounded,
             ),
             children: [
               for (final file in pending.fichiers)
@@ -119,7 +121,10 @@ class PendingBubble extends StatelessWidget {
                     ),
                   ),
                 TextButton(onPressed: onRetry, child: const Text('Réessayer')),
-                TextButton(onPressed: onDiscard, child: const Text('Supprimer')),
+                TextButton(
+                  onPressed: onDiscard,
+                  child: const Text('Supprimer'),
+                ),
               ],
             ),
           ),
@@ -239,9 +244,10 @@ class _Footer extends StatelessWidget {
           children: [
             Text(
               time,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: color, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             if (icon case final data?) ...[
               const SizedBox(width: 3),

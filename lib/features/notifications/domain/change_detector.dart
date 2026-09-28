@@ -34,10 +34,18 @@ class MissionSnapshot {
       json['fin'],
       json['motif'],
     );
-    if (statut is! String || debut is! String || fin is! String || motif is! String) {
+    if (statut is! String ||
+        debut is! String ||
+        fin is! String ||
+        motif is! String) {
       return null;
     }
-    return MissionSnapshot(statut: statut, debut: debut, fin: fin, motif: motif);
+    return MissionSnapshot(
+      statut: statut,
+      debut: debut,
+      fin: fin,
+      motif: motif,
+    );
   }
 
   final String statut;
@@ -58,8 +66,9 @@ class MissionSnapshot {
 /// synchronisation (pas en temps réel). La première synchronisation sert
 /// de référence et ne produit aucune notification.
 abstract final class ChangeDetector {
-  static Map<int, MissionSnapshot> snapshotMissions(List<Mission> missions) =>
-      {for (final m in missions) m.idMission: MissionSnapshot.of(m)};
+  static Map<int, MissionSnapshot> snapshotMissions(List<Mission> missions) => {
+    for (final m in missions) m.idMission: MissionSnapshot.of(m),
+  };
 
   static List<AppNotification> missionChanges(
     Map<int, MissionSnapshot>? previous,

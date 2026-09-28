@@ -30,8 +30,11 @@ class FuelRepository {
   final ApiClient _api;
 
   /// `POST /api/moi/pleins` → 201.
-  Future<FuelEntry> declarer(CreateFuelRequest request) =>
-      _api.post(ApiEndpoints.pleins, FuelEntry.fromJson, body: request.toJson());
+  Future<FuelEntry> declarer(CreateFuelRequest request) => _api.post(
+    ApiEndpoints.pleins,
+    FuelEntry.fromJson,
+    body: request.toJson(),
+  );
 }
 
 final fuelRepositoryProvider = Provider<FuelRepository>(

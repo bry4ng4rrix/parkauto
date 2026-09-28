@@ -41,16 +41,21 @@ final realtimeStatusProvider = StreamProvider<RealtimeStatus>((ref) async* {
 });
 
 /// Conversation affichée à l'écran (route courante, app au premier plan).
-final activeConversationProvider =
-    NotifierProvider<ActiveConversation, int?>(ActiveConversation.new);
+final activeConversationProvider = NotifierProvider<ActiveConversation, int?>(
+  ActiveConversation.new,
+);
 
 class ActiveConversation extends Notifier<int?> {
   @override
   int? build() => null;
 
-  void enter(int idConversation) => state = idConversation;
+  // Appelés de façon différée par l'écran : le conteneur peut déjà avoir
+  // été libéré (fermeture de l'application).
+  void enter(int idConversation) {
+    if (ref.mounted) state = idConversation;
+  }
 
   void leave(int idConversation) {
-    if (state == idConversation) state = null;
+    if (ref.mounted && state == idConversation) state = null;
   }
 }

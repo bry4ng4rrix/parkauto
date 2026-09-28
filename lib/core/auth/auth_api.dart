@@ -67,12 +67,8 @@ final authApiProvider = Provider<AuthApi>((ref) {
 
 /// Statuts qui signifient que le jeton de rafraîchissement est refusé.
 bool isRefreshRejected(AppException error) => switch (error) {
-  ApiException(:final statusCode) ||
-  HttpStatusException(:final statusCode) => const {
-    400,
-    401,
-    403,
-  }.contains(statusCode),
+  ApiException(:final statusCode) || HttpStatusException(:final statusCode) =>
+    const {400, 401, 403}.contains(statusCode),
   SessionExpiredException() => true,
   _ => false,
 };

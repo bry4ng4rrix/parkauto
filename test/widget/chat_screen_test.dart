@@ -25,8 +25,18 @@ FakeBackend _backend() => FakeBackend()
     200,
     Contract.response('Mes conversations', '200'),
   )
-  ..json('POST', ApiEndpoints.ticketTempsReel, 200, Contract.response('Ticket temps réel', '200'))
-  ..on('POST', ApiEndpoints.marquerLu(5), (_) => const FakeReply.noContent());
+  ..json(
+    'POST',
+    ApiEndpoints.ticketTempsReel,
+    200,
+    Contract.response('Ticket temps réel', '200'),
+  )
+  ..on('POST', ApiEndpoints.marquerLu(5), (_) => const FakeReply.noContent())
+  ..json('GET', ApiEndpoints.nonLus, 200, {'total': 0});
+
+/// Laisse s'exécuter la réconciliation différée du total non lu (2 s).
+Future<void> _drainTimers(WidgetTester tester) =>
+    tester.pump(const Duration(seconds: 3));
 
 bool _isMine(WidgetTester tester, String text) => tester
     .widget<MessageBubble>(
@@ -45,12 +55,16 @@ void main() {
 
     expect(find.text('Hery RAKOTO'), findsWidgets);
     expect(
-      _isMine(tester, "Bonjour Tiana, le chantier d'Ivato attend le ciment avant 10 h."),
+      _isMine(
+        tester,
+        "Bonjour Tiana, le chantier d'Ivato attend le ciment avant 10 h.",
+      ),
       isFalse,
     );
     expect(_isMine(tester, 'Bien reçu, je pars maintenant.'), isTrue);
     expect(find.text('bon-livraison-ivato.pdf'), findsOneWidget);
     expect(find.text('Début de la conversation'), findsOneWidget);
+    await _drainTimers(tester);
   });
 
   testWidgets('envoi puis écho WebSocket : un seul message', (tester) async {
@@ -73,6 +87,7 @@ void main() {
     await settle(tester);
 
     await tester.enterText(find.byType(TextField), 'Déchargement terminé.');
+    await tester.pump();
     await tester.tap(find.byTooltip('Envoyer'));
     await settle(tester);
 
@@ -89,6 +104,7 @@ void main() {
     expect(find.text('Déchargement terminé.'), findsOneWidget);
 
     await container.read(realtimeServiceProvider).disconnect();
+    await _drainTimers(tester);
   });
 
   testWidgets('erreur serveur : message et « Réessayer »', (tester) async {
@@ -109,5 +125,6 @@ void main() {
 
     expect(find.text('Une erreur inattendue est survenue'), findsOneWidget);
     expect(find.text('Réessayer'), findsOneWidget);
+    await _drainTimers(tester);
   });
 }

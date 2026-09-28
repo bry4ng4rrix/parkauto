@@ -75,21 +75,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with RouteAware {
   @override
   void didPop() => _leave();
 
+  // Les callbacks RouteAware peuvent survenir pendant un build
+  // (`subscribe` appelle `didPush`) : l'état partagé est mis à jour juste
+  // après.
   void _enter() {
     _visible = true;
-    _active.enter(_id);
-    _reads.markRead(_id);
+    scheduleMicrotask(() {
+      if (!mounted || !_visible) return;
+      _active.enter(_id);
+      _reads.markRead(_id);
+    });
   }
 
   void _leave() {
     _visible = false;
-    _active.leave(_id);
+    scheduleMicrotask(() => _active.leave(_id));
   }
 
   @override
   void dispose() {
     appRouteObserver.unsubscribe(this);
-    _active.leave(_id);
+    _leave();
     _scroll.dispose();
     super.dispose();
   }
@@ -135,8 +141,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with RouteAware {
                 onRetry: (localId) => unawaited(
                   ref.read(chatControllerProvider(_id).notifier).retry(localId),
                 ),
-                onDiscard: (localId) =>
-                    ref.read(chatControllerProvider(_id).notifier).discard(localId),
+                onDiscard: (localId) => ref
+                    .read(chatControllerProvider(_id).notifier)
+                    .discard(localId),
               ),
               AsyncValue(error: final error?) => ErrorState(
                 error: error,
@@ -149,7 +156,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> with RouteAware {
             idConversation: _id,
             onSend: (text, files) {
               unawaited(
-                ref.read(chatControllerProvider(_id).notifier).send(text, files),
+                ref
+                    .read(chatControllerProvider(_id).notifier)
+                    .send(text, files),
               );
               if (_scroll.hasClients) {
                 _scroll.animateTo(
@@ -368,7 +377,9 @@ class _Thread extends ConsumerWidget {
       ),
       itemCount: items.length + 1,
       itemBuilder: (context, index) {
-        if (index == items.length) return _OlderIndicator(state: state, onRetry: onRetryOlder);
+        if (index == items.length) {
+          return _OlderIndicator(state: state, onRetry: onRetryOlder);
+        }
         final item = items[index];
         return Padding(
           padding: const EdgeInsets.only(top: AppSpacing.xs),
@@ -415,7 +426,10 @@ class _OlderIndicator extends StatelessWidget {
         label: const Text('Charger les messages précédents'),
       );
     } else if (!state.hasMore) {
-      child = Text('Début de la conversation', style: theme.textTheme.bodySmall);
+      child = Text(
+        'Début de la conversation',
+        style: theme.textTheme.bodySmall,
+      );
     } else {
       child = const SizedBox(height: 22);
     }

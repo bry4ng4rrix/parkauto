@@ -57,7 +57,11 @@ void main() {
         Contract.response('Mes conversations', '200'),
       )
       ..json('GET', ApiEndpoints.nonLus, 200, {'total': 3})
-      ..on('POST', ApiEndpoints.marquerLu(5), (_) => const FakeReply.noContent());
+      ..on(
+        'POST',
+        ApiEndpoints.marquerLu(5),
+        (_) => const FakeReply.noContent(),
+      );
   });
 
   Future<(MessageEventHandler, ProviderContainer)> setUpHandler() async {
@@ -71,26 +75,36 @@ void main() {
     return (container.read(_handlerProvider), container);
   }
 
-  test('message reçu au premier plan : badges, notification, bannière', () async {
-    final (handler, container) = await setUpHandler();
-    container.read(appLifecycleProvider.notifier).update(AppLifecycleState.resumed);
+  test(
+    'message reçu au premier plan : badges, notification, bannière',
+    () async {
+      final (handler, container) = await setUpHandler();
+      container
+          .read(appLifecycleProvider.notifier)
+          .update(AppLifecycleState.resumed);
 
-    handler.handle(_event(idConversation: 5, authorId: 2));
+      handler.handle(_event(idConversation: 5, authorId: 2));
 
-    expect(container.read(unreadCountProvider), 4);
-    final conversation = container
-        .read(conversationsProvider.notifier)
-        .find(5);
-    expect(conversation?.nonLus, 3);
-    expect(conversation?.dateDernierMessage, DateTime.utc(2026, 9, 28, 10, 20, 5));
-    expect(container.read(unreadNotificationCountProvider), 1);
-    expect(banners.single, startsWith('Tiana RABE|Déchargement terminé.|5'));
-    expect(notifications.shown, isEmpty);
-  });
+      expect(container.read(unreadCountProvider), 4);
+      final conversation = container
+          .read(conversationsProvider.notifier)
+          .find(5);
+      expect(conversation?.nonLus, 3);
+      expect(
+        conversation?.dateDernierMessage,
+        DateTime.utc(2026, 9, 28, 10, 20, 5),
+      );
+      expect(container.read(unreadNotificationCountProvider), 1);
+      expect(banners.single, startsWith('Tiana RABE|Déchargement terminé.|5'));
+      expect(notifications.shown, isEmpty);
+    },
+  );
 
   test('en arrière-plan : notification locale ouvrant le chat', () async {
     final (handler, container) = await setUpHandler();
-    container.read(appLifecycleProvider.notifier).update(AppLifecycleState.paused);
+    container
+        .read(appLifecycleProvider.notifier)
+        .update(AppLifecycleState.paused);
 
     handler.handle(_event(idConversation: 5, authorId: 2));
 
@@ -101,7 +115,9 @@ void main() {
 
   test('conversation ouverte : pas de badge ni de notification', () async {
     final (handler, container) = await setUpHandler();
-    container.read(appLifecycleProvider.notifier).update(AppLifecycleState.resumed);
+    container
+        .read(appLifecycleProvider.notifier)
+        .update(AppLifecycleState.resumed);
     container.read(activeConversationProvider.notifier).enter(5);
 
     handler.handle(_event(idConversation: 5, authorId: 2));

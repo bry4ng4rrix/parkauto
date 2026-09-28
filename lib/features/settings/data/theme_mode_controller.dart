@@ -16,10 +16,9 @@ class ThemeModeController extends Notifier<ThemeMode> {
 
   Future<void> select(ThemeMode mode) async {
     state = mode;
-    await ref.read(preferencesProvider).setString(
-      PreferenceKeys.themeMode,
-      mode.name,
-    );
+    await ref
+        .read(preferencesProvider)
+        .setString(PreferenceKeys.themeMode, mode.name);
   }
 
   static ThemeMode parse(String? value) => ThemeMode.values.firstWhere(

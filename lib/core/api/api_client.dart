@@ -126,8 +126,7 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   });
   return ApiClient(
     dio,
-    onResult: ({required reachable}) => ref
-        .read(serverReachableProvider.notifier)
-        .report(reachable: reachable),
+    onResult: ({required reachable}) =>
+        ref.read(serverReachableProvider.notifier).report(reachable: reachable),
   );
 });

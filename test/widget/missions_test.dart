@@ -11,8 +11,18 @@ import '../helpers/pump.dart';
 import '../helpers/test_app.dart';
 
 FakeBackend _backend() => FakeBackend()
-  ..json('GET', ApiEndpoints.missions, 200, Contract.response('Mes missions', '200'))
-  ..json('GET', ApiEndpoints.vehicule, 200, Contract.response('Mon véhicule', '200'))
+  ..json(
+    'GET',
+    ApiEndpoints.missions,
+    200,
+    Contract.response('Mes missions', '200'),
+  )
+  ..json(
+    'GET',
+    ApiEndpoints.vehicule,
+    200,
+    Contract.response('Mon véhicule', '200'),
+  )
   ..json('GET', ApiEndpoints.moi, 200, Contract.response('Accueil', '200'));
 
 Future<void> _openStartSheet(WidgetTester tester) async {
@@ -37,7 +47,10 @@ void main() {
     await tester.tap(find.text('Planifiées · 2'));
     await settle(tester);
 
-    expect(find.text('Transport équipe chantier Ambohidratrimo'), findsOneWidget);
+    expect(
+      find.text('Transport équipe chantier Ambohidratrimo'),
+      findsOneWidget,
+    );
     expect(find.text('Livraison ciment chantier Tanjombato'), findsNothing);
     expect(find.text('Livraison matériaux chantier Ivato'), findsNothing);
   });
@@ -68,7 +81,9 @@ void main() {
     expect(backend.calls('POST', ApiEndpoints.demarrerMission(91)), isEmpty);
   });
 
-  testWidgets('démarrer : confirmation puis 409 affiché tel quel', (tester) async {
+  testWidgets('démarrer : confirmation puis 409 affiché tel quel', (
+    tester,
+  ) async {
     final backend = _backend()
       ..json(
         'POST',
