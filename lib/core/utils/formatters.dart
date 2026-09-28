@@ -82,6 +82,15 @@ abstract final class AppFormat {
     return date(local);
   }
 
+  /// Plage horaire : « 28 sept. · 07:00 – 17:00 » ou « 28 sept. 07:00 →
+  /// 29 sept. 17:00 ».
+  static String range(DateTime start, DateTime end) {
+    if (AppDateTime.isSameDay(start, end)) {
+      return '${shortDate(start)} · ${time(start)} – ${time(end)}';
+    }
+    return '${shortDate(start)} ${time(start)} → ${shortDate(end)} ${time(end)}';
+  }
+
   /// Échéance à partir de `joursRestants`.
   static String remainingDays(int days) {
     if (days < 0) {

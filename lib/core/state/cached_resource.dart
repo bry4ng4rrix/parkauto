@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api/api_client.dart';
 import '../auth/session_controller.dart';
 import '../errors/app_exception.dart';
+import '../errors/error_messages.dart';
 import '../logging/app_logger.dart';
 import '../storage/json_cache.dart';
 
@@ -80,8 +81,17 @@ abstract class CachedResourceNotifier<T extends Object>
 
   /// Rafraîchit depuis le serveur. Renvoie l'erreur éventuelle ; les
   /// données déjà affichées sont conservées.
-  Future<AppException?> refresh() =>
-      _pending ??= _refresh().whenComplete(() => _pending = null);
+  Future<AppException?> refresh() {
+    final current = state;
+    if (current.isLoading && !current.hasValue) {
+      // Premier chargement en cours : on attend son résultat.
+      return future.then<AppException?>(
+        (_) => null,
+        onError: (Object error, StackTrace _) => asAppException(error),
+      );
+    }
+    return _pending ??= _refresh().whenComplete(() => _pending = null);
+  }
 
   /// Applique localement une donnée renvoyée par une mutation.
   void mutate(T Function(T current) update) {
