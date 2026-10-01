@@ -237,7 +237,7 @@ class QualificationNotice extends StatelessWidget {
   }
 }
 
-/// Raccourcis : plein, incident, missions, messagerie.
+/// Raccourcis : carburant, incident, missions, messagerie.
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key});
 
@@ -246,7 +246,7 @@ class QuickActions extends StatelessWidget {
     final actions = [
       (
         Icons.local_gas_station_rounded,
-        'Plein',
+        'Carburant',
         () => context.push(AppRoutes.fuelNew),
       ),
       (
@@ -337,7 +337,7 @@ class RecentActivity extends ConsumerWidget {
       children: [
         SectionHeader(
           title: 'Activité récente',
-          actionLabel: 'Pleins',
+          actionLabel: 'Carburant',
           onAction: () => context.push(AppRoutes.fuel),
         ),
         loadingOr(

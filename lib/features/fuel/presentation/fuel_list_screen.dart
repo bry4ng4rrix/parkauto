@@ -37,11 +37,11 @@ class FuelListScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mes pleins')),
+      appBar: AppBar(title: const Text('Carburant')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(AppRoutes.fuelNew),
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Déclarer un plein'),
+        label: const Text('Réapprovisionner'),
       ),
       body: ResourceView(
         value: entries,
@@ -51,7 +51,7 @@ class FuelListScreen extends ConsumerWidget {
           onRefresh: refresh,
           child: const EmptyState(
             icon: Icons.local_gas_station_outlined,
-            title: 'Aucun plein enregistré',
+            title: 'Aucun réapprovisionnement enregistré',
             message: 'Vos déclarations de carburant apparaîtront ici.',
           ),
         ),

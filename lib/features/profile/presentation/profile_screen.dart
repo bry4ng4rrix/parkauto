@@ -103,7 +103,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         _Link(
                           icon: Icons.local_gas_station_outlined,
-                          label: 'Mes pleins',
+                          label: 'Carburant',
                           onTap: () => context.push(AppRoutes.fuel),
                         ),
                         _Link(

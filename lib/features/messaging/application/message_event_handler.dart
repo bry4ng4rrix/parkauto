@@ -3,41 +3,28 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/router/app_routes.dart';
-import '../../../core/auth/session_controller.dart';
 import '../../../core/lifecycle/app_lifecycle.dart';
-import '../../../core/notifications/local_notification_service.dart';
-import '../../../core/notifications/notification_payload.dart';
 import '../../notifications/data/notification_feed.dart';
 import '../../notifications/domain/app_notification.dart';
 import '../data/conversations_provider.dart';
+import '../domain/messaging_models.dart';
 import '../domain/realtime_event.dart';
 import 'own_message.dart';
 import 'realtime.dart';
 import 'unread_counter.dart';
 
-/// Bannière in-app (application au premier plan).
-typedef ForegroundMessageCallback =
-    void Function({
-      required String title,
-      required String body,
-      required int idConversation,
-    });
-
 /// Traitement global d'un événement `MESSAGE` (hors écran de chat, qui
-/// ajoute lui-même le message à son fil).
+/// ajoute lui-même le message à son fil) : badges, puis notification Android.
 class MessageEventHandler {
-  MessageEventHandler(this._ref, {required this.onForegroundMessage});
+  MessageEventHandler(this._ref);
 
   final Ref _ref;
-  final ForegroundMessageCallback onForegroundMessage;
 
   void handle(MessageRealtimeEvent event) {
     final message = event.message;
-    final me = _ref.read(currentUserIdProvider);
     final isMine = _ref.read(ownMessageMatcherProvider)(message);
-    final foreground = _ref.read(appLifecycleProvider).isForeground;
     final isOpen =
-        foreground &&
+        _ref.read(appLifecycleProvider).isForeground &&
         _ref.read(activeConversationProvider) == event.idConversation;
 
     _ref.read(conversationPreviewsProvider.notifier).record(message);
@@ -53,45 +40,37 @@ class MessageEventHandler {
       ..increment()
       ..scheduleReconcile();
 
-    final conversation = conversations.find(event.idConversation);
-    final author = message.auteur.nomComplet;
-    final title = conversation != null && conversation.type.isGroup
-        ? '$author · ${conversation.titre}'
-        : author;
-    final body = message.preview.isEmpty ? 'Nouveau message' : message.preview;
-    final route = AppRoutes.chat(event.idConversation);
-
-    _ref
-        .read(notificationFeedProvider.notifier)
-        .add(
-          AppNotification(
-            id: 'message:${message.idMessage}',
-            kind: AppNotificationKind.message,
-            title: 'Nouveau message · $title',
-            body: body,
-            createdAt: message.dateEnvoi,
-            route: route,
-            conversationId: event.idConversation,
-          ),
-        );
-
-    if (foreground) {
-      onForegroundMessage(
-        title: title,
-        body: body,
-        idConversation: event.idConversation,
-      );
-    } else {
-      unawaited(
-        _ref
-            .read(localNotificationServiceProvider)
-            .showMessage(
-              id: message.idMessage,
-              title: title,
-              body: body,
-              payload: NotificationPayload(route: route, userId: me),
+    // Publiée dans la barre de notifications Android par le flux.
+    unawaited(
+      _ref
+          .read(notificationFeedProvider.notifier)
+          .add(
+            messageNotification(
+              message,
+              conversations.find(event.idConversation),
             ),
-      );
-    }
+          ),
+    );
   }
+}
+
+/// Notification d'un message reçu (temps réel ou vérification en
+/// arrière-plan : même identifiant, donc jamais en double).
+AppNotification messageNotification(
+  Message message,
+  Conversation? conversation,
+) {
+  final author = message.auteur.nomComplet;
+  final title = conversation != null && conversation.type.isGroup
+      ? '$author · ${conversation.titre}'
+      : author;
+  return AppNotification(
+    id: 'message:${message.idMessage}',
+    kind: AppNotificationKind.message,
+    title: title,
+    body: message.preview.isEmpty ? 'Nouveau message' : message.preview,
+    createdAt: message.dateEnvoi,
+    route: AppRoutes.chat(message.idConversation),
+    conversationId: message.idConversation,
+  );
 }

@@ -133,7 +133,7 @@ class SyncService {
     }
 
     if (found.isNotEmpty) {
-      _ref.read(notificationFeedProvider.notifier).addAll(found);
+      await _ref.read(notificationFeedProvider.notifier).addAll(found);
     }
   }
 

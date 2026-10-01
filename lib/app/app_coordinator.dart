@@ -18,9 +18,10 @@ import '../features/messaging/application/realtime.dart';
 import '../features/messaging/application/unread_counter.dart';
 import '../features/messaging/data/conversations_provider.dart';
 import '../features/messaging/domain/realtime_event.dart';
+import '../features/notifications/data/notification_feed.dart';
+import 'background/background_scheduler.dart';
 import 'config/app_config.dart';
 import 'router/app_router.dart';
-import 'router/app_routes.dart';
 import 'sync/sync_service.dart';
 
 /// Orchestration hors écrans : session, temps réel, synchronisation,
@@ -32,10 +33,7 @@ class AppCoordinator {
   final Ref _ref;
   final _subscriptions = <StreamSubscription<Object?>>[];
   late final SyncService _sync = SyncService(_ref);
-  late final MessageEventHandler _messages = MessageEventHandler(
-    _ref,
-    onForegroundMessage: _showMessageBanner,
-  );
+  late final MessageEventHandler _messages = MessageEventHandler(_ref);
 
   DateTime? _pausedAt;
   Timer? _backgroundTimer;
@@ -80,6 +78,7 @@ class AppCoordinator {
       case AppLifecycleState.paused:
         _pausedAt ??= DateTime.now();
         _sync.stop();
+        unawaited(_markForeground(false));
         // Le WebSocket reste ouvert un moment : les messages reçus
         // donnent lieu à une notification locale.
         _backgroundTimer?.cancel();
@@ -92,6 +91,9 @@ class AppCoordinator {
         _backgroundTimer = null;
         final pausedAt = _pausedAt;
         _pausedAt = null;
+        unawaited(_markForeground(true));
+        // Notifications publiées entre-temps par la tâche d'arrière-plan.
+        unawaited(_ref.read(notificationFeedProvider.notifier).reloadStored());
         _ref.read(realtimeServiceProvider).connect();
         final away = pausedAt == null
             ? Duration.zero
@@ -148,6 +150,8 @@ class AppCoordinator {
     AppLogger.debug('App', 'Session ouverte');
     _ref.read(realtimeServiceProvider).connect();
     _sync.start(_config.syncInterval);
+    unawaited(_markForeground(true));
+    unawaited(_ref.read(backgroundSchedulerProvider).schedule());
     unawaited(_ref.read(pushServiceProvider).initialize());
     unawaited(_askNotificationPermissionOnce());
 
@@ -167,6 +171,8 @@ class AppCoordinator {
     _backgroundTimer?.cancel();
     _pausedAt = null;
     await _ref.read(realtimeServiceProvider).disconnect();
+    await _ref.read(backgroundSchedulerProvider).cancel();
+    await _markForeground(false);
     await _ref.read(localNotificationServiceProvider).cancelAll();
     await _ref.read(pushServiceProvider).unregister();
     await clearPreferencePrefixes(
@@ -201,49 +207,28 @@ class AppCoordinator {
     unawaited(_ref.read(conversationsProvider.notifier).refresh());
   }
 
+  /// Marqueur lu par la vérification en arrière-plan (autre isolat).
+  Future<void> _markForeground(bool foreground) async {
+    final prefs = _ref.read(preferencesProvider);
+    try {
+      if (foreground) {
+        await prefs.setString(
+          PreferenceKeys.foregroundSince,
+          DateTime.now().toIso8601String(),
+        );
+      } else {
+        await prefs.remove(PreferenceKeys.foregroundSince);
+      }
+    } on Exception catch (e) {
+      AppLogger.warning('App', 'Marqueur de premier plan', e);
+    }
+  }
+
   Future<void> _askNotificationPermissionOnce() async {
     final prefs = _ref.read(preferencesProvider);
     if (await prefs.getBool(PreferenceKeys.permissionAsked) ?? false) return;
     await prefs.setBool(PreferenceKeys.permissionAsked, true);
     await _ref.read(localNotificationServiceProvider).requestPermission();
-  }
-
-  void _showMessageBanner({
-    required String title,
-    required String body,
-    required int idConversation,
-  }) {
-    final messenger = rootScaffoldMessengerKey.currentState;
-    if (messenger == null) return;
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 5),
-          content: Semantics(
-            liveRegion: true,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(body, maxLines: 2, overflow: TextOverflow.ellipsis),
-              ],
-            ),
-          ),
-          action: SnackBarAction(
-            label: 'Ouvrir',
-            onPressed: () =>
-                _ref.read(routerProvider).push(AppRoutes.chat(idConversation)),
-          ),
-        ),
-      );
   }
 
   void dispose() {

@@ -81,14 +81,17 @@ abstract class CachedResourceNotifier<T extends Object>
 
   /// Rafraîchit depuis le serveur. Renvoie l'erreur éventuelle ; les
   /// données déjà affichées sont conservées.
-  Future<AppException?> refresh() {
+  Future<AppException?> refresh() async {
     final current = state;
     if (current.isLoading && !current.hasValue) {
-      // Premier chargement en cours : on attend son résultat.
-      return future.then<AppException?>(
-        (_) => null,
-        onError: (Object error, StackTrace _) => asAppException(error),
-      );
+      // Premier chargement en cours : on attend son résultat. S'il vient du
+      // cache, l'appelant attend la revalidation serveur qui suit.
+      try {
+        final loaded = await future;
+        if (!loaded.fromCache || !ref.mounted) return null;
+      } on Object catch (error) {
+        return asAppException(error);
+      }
     }
     return _pending ??= _refresh().whenComplete(() => _pending = null);
   }

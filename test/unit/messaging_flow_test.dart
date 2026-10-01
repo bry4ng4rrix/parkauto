@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkauto/core/api/api_endpoints.dart';
 import 'package:parkauto/core/lifecycle/app_lifecycle.dart';
+import 'package:parkauto/core/notifications/local_notification_service.dart';
 import 'package:parkauto/features/messaging/application/message_event_handler.dart';
 import 'package:parkauto/features/messaging/application/read_service.dart';
 import 'package:parkauto/features/messaging/application/realtime.dart';
@@ -31,23 +32,16 @@ MessageRealtimeEvent _event({
   return MessageRealtimeEvent.fromJson(json);
 }
 
-final banners = <String>[];
+final _handlerProvider = Provider<MessageEventHandler>(MessageEventHandler.new);
 
-final _handlerProvider = Provider<MessageEventHandler>(
-  (ref) => MessageEventHandler(
-    ref,
-    onForegroundMessage:
-        ({required title, required body, required idConversation}) =>
-            banners.add('$title|$body|$idConversation'),
-  ),
-);
+/// Laisse le flux de notifications charger son historique et publier.
+Future<void> _settle() => Future<void>.delayed(Duration.zero);
 
 void main() {
   late FakeBackend backend;
   late FakeLocalNotifications notifications;
 
   setUp(() {
-    banners.clear();
     notifications = FakeLocalNotifications();
     backend = FakeBackend()
       ..json(
@@ -76,7 +70,7 @@ void main() {
   }
 
   test(
-    'message reçu au premier plan : badges, notification, bannière',
+    'message reçu au premier plan : badges et notification système',
     () async {
       final (handler, container) = await setUpHandler();
       container
@@ -84,6 +78,7 @@ void main() {
           .update(AppLifecycleState.resumed);
 
       handler.handle(_event(idConversation: 5, authorId: 2));
+      await _settle();
 
       expect(container.read(unreadCountProvider), 4);
       final conversation = container
@@ -95,22 +90,38 @@ void main() {
         DateTime.utc(2026, 9, 28, 10, 20, 5),
       );
       expect(container.read(unreadNotificationCountProvider), 1);
-      expect(banners.single, startsWith('Tiana RABE|Déchargement terminé.|5'));
-      expect(notifications.shown, isEmpty);
+      final shown = notifications.shown.single;
+      expect(shown.title, startsWith('Tiana RABE'));
+      expect(shown.body, 'Déchargement terminé.');
+      expect(shown.channel, NotificationChannel.messages);
+      expect(shown.payload.route, '/chat/5');
+      expect(shown.payload.userId, 27);
     },
   );
 
-  test('en arrière-plan : notification locale ouvrant le chat', () async {
+  test('en arrière-plan : notification système ouvrant le chat', () async {
     final (handler, container) = await setUpHandler();
     container
         .read(appLifecycleProvider.notifier)
         .update(AppLifecycleState.paused);
 
     handler.handle(_event(idConversation: 5, authorId: 2));
+    await _settle();
 
-    expect(banners, isEmpty);
     expect(notifications.shown.single.payload.route, '/chat/5');
     expect(notifications.shown.single.payload.userId, 27);
+  });
+
+  test('même message reçu deux fois : une seule notification', () async {
+    final (handler, container) = await setUpHandler();
+
+    handler
+      ..handle(_event(idConversation: 5, authorId: 2))
+      ..handle(_event(idConversation: 5, authorId: 2));
+    await _settle();
+
+    expect(notifications.shown, hasLength(1));
+    expect(container.read(notificationFeedProvider), hasLength(1));
   });
 
   test('conversation ouverte : pas de badge ni de notification', () async {
@@ -121,20 +132,22 @@ void main() {
     container.read(activeConversationProvider.notifier).enter(5);
 
     handler.handle(_event(idConversation: 5, authorId: 2));
+    await _settle();
 
     expect(container.read(unreadCountProvider), 3);
     expect(container.read(conversationsProvider.notifier).find(5)?.nonLus, 2);
-    expect(banners, isEmpty);
+    expect(notifications.shown, isEmpty);
   });
 
   test('son propre message (écho WebSocket) : aucune notification', () async {
     final (handler, container) = await setUpHandler();
 
     handler.handle(_event(idConversation: 5, authorId: 27));
+    await _settle();
 
     expect(container.read(unreadCountProvider), 3);
     expect(container.read(unreadNotificationCountProvider), 0);
-    expect(banners, isEmpty);
+    expect(notifications.shown, isEmpty);
   });
 
   test('marquer comme lu : badge à zéro puis POST /lu', () async {
@@ -149,5 +162,18 @@ void main() {
     expect(container.read(conversationsProvider.notifier).find(5)?.nonLus, 0);
     expect(container.read(unreadCountProvider), 1);
     expect(backend.calls('POST', ApiEndpoints.marquerLu(5)), hasLength(1));
+  });
+
+  test('conversation lue : sa notification quitte la barre système', () async {
+    final (handler, container) = await setUpHandler();
+    handler.handle(_event(idConversation: 5, authorId: 2));
+    await _settle();
+    expect(notifications.shown, hasLength(1));
+
+    container.read(notificationFeedProvider.notifier).markConversationRead(5);
+    await _settle();
+
+    expect(notifications.shown, isEmpty);
+    expect(container.read(unreadNotificationCountProvider), 0);
   });
 }

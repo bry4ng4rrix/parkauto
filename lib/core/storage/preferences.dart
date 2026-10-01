@@ -12,6 +12,10 @@ abstract final class PreferenceKeys {
   static const installed = 'app.installed';
   static const permissionAsked = 'notifications.permissionAsked';
 
+  /// Instant du dernier passage au premier plan, retiré à la mise en pause :
+  /// la vérification en arrière-plan ne double pas le travail de l'app.
+  static const foregroundSince = 'app.foregroundSince';
+
   /// Données propres au conducteur connecté, effacées à la déconnexion.
   static const userScopedPrefixes = ['cache.', 'notifications.', 'sync.'];
 }

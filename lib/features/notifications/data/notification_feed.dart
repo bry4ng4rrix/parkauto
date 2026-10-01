@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../app/router/app_routes.dart';
 import '../../../core/auth/session_controller.dart';
 import '../../../core/logging/app_logger.dart';
+import '../../../core/notifications/local_notification_service.dart';
+import '../../../core/notifications/notification_payload.dart';
 import '../../../core/storage/preferences.dart';
 import '../domain/app_notification.dart';
 
@@ -43,6 +46,35 @@ class NotificationStore {
       AppLogger.warning('Notifications', 'Écriture impossible', e);
     }
   }
+
+  /// Enregistre [items] fusionnées avec l'historique déjà enregistré : la
+  /// vérification en arrière-plan (autre isolat) a pu en ajouter.
+  Future<List<AppNotification>> merge(
+    int driverId,
+    List<AppNotification> items,
+  ) async {
+    final merged = mergeNotifications(items, await read(driverId));
+    await write(driverId, merged);
+    return merged;
+  }
+}
+
+/// Union par `id` (lue si l'une des copies l'est), de la plus récente à la
+/// plus ancienne, limitée à [NotificationFeed.maxItems].
+List<AppNotification> mergeNotifications(
+  Iterable<AppNotification> a,
+  Iterable<AppNotification> b,
+) {
+  final byId = <String, AppNotification>{};
+  for (final n in [...a, ...b]) {
+    final known = byId[n.id];
+    byId[n.id] = known == null
+        ? n
+        : (n.read && !known.read ? known.asRead() : known);
+  }
+  final items = byId.values.toList()
+    ..sort((x, y) => y.createdAt.compareTo(x.createdAt));
+  return List.unmodifiable(items.take(NotificationFeed.maxItems));
 }
 
 final notificationStoreProvider = Provider<NotificationStore>(
@@ -60,24 +92,37 @@ final unreadNotificationCountProvider = Provider<int>(
 );
 
 /// Centralise les événements temps réel, les changements détectés à la
-/// synchronisation et les alertes (et, plus tard, les push FCM).
+/// synchronisation et les alertes. Chaque nouvelle notification est publiée
+/// dans la barre de notifications Android ; la liste sert d'historique.
 class NotificationFeed extends Notifier<List<AppNotification>> {
   static const maxItems = 100;
 
   int? _driverId;
+  Future<void>? _loading;
+  Future<void> _persisting = Future<void>.value();
 
   @override
   List<AppNotification> build() {
     final driverId = ref.watch(currentDriverIdProvider);
     _driverId = driverId;
-    if (driverId != null) unawaited(_load(driverId));
+    _loading = driverId == null ? null : _persist();
     return const [];
   }
 
-  void add(AppNotification notification) => addAll([notification]);
+  /// Historique enregistré chargé (nécessaire au dédoublonnage).
+  Future<void> ensureLoaded() => _loading ?? Future<void>.value();
 
-  /// Ajoute les notifications inconnues (dédoublonnage par `id`).
-  void addAll(Iterable<AppNotification> notifications) {
+  /// Reprend les notifications ajoutées entre-temps par la vérification en
+  /// arrière-plan (retour au premier plan).
+  Future<void> reloadStored() => _persist();
+
+  Future<void> add(AppNotification notification) => addAll([notification]);
+
+  /// Ajoute et publie les notifications inconnues (dédoublonnage par `id`,
+  /// y compris avec l'historique enregistré).
+  Future<void> addAll(Iterable<AppNotification> notifications) async {
+    await ensureLoaded();
+    if (!ref.mounted) return;
     final known = {for (final n in state) n.id};
     final fresh = [
       for (final n in notifications)
@@ -85,17 +130,36 @@ class NotificationFeed extends Notifier<List<AppNotification>> {
     ];
     if (fresh.isEmpty) return;
     _set([...fresh, ...state]);
+    _publish(fresh);
+    await _persisting;
   }
 
-  void markRead(String id) =>
-      _set([for (final n in state) n.id == id ? n.asRead() : n]);
+  /// Notification lue dans l'app : elle quitte aussi la barre système.
+  void markRead(String id) {
+    unawaited(
+      ref
+          .read(localNotificationServiceProvider)
+          .cancel(stableNotificationId(id)),
+    );
+    _set([for (final n in state) n.id == id ? n.asRead() : n]);
+  }
 
-  void markAllRead() => _set([for (final n in state) n.asRead()]);
+  void markAllRead() {
+    unawaited(ref.read(localNotificationServiceProvider).cancelAll());
+    _set([for (final n in state) n.asRead()]);
+  }
 
-  /// Conversation lue : ses notifications de message le sont aussi.
+  /// Conversation lue : ses notifications de message le sont aussi, et
+  /// quittent la barre de notifications.
   void markConversationRead(int idConversation) {
-    if (!state.any((n) => n.conversationId == idConversation && !n.read)) {
-      return;
+    final concerned = [
+      for (final n in state)
+        if (n.conversationId == idConversation && !n.read) n,
+    ];
+    if (concerned.isEmpty) return;
+    final service = ref.read(localNotificationServiceProvider);
+    for (final n in concerned) {
+      unawaited(service.cancel(stableNotificationId(n.id)));
     }
     _set([
       for (final n in state)
@@ -103,19 +167,60 @@ class NotificationFeed extends Notifier<List<AppNotification>> {
     ]);
   }
 
-  Future<void> _load(int driverId) async {
-    final stored = await ref.read(notificationStoreProvider).read(driverId);
-    if (!ref.mounted || _driverId != driverId || stored.isEmpty) return;
-    final known = {for (final n in state) n.id};
-    _set([...state, ...stored.where((n) => !known.contains(n.id))]);
+  void _publish(List<AppNotification> fresh) {
+    final service = ref.read(localNotificationServiceProvider);
+    final userId = ref.read(currentUserIdProvider);
+    for (final n in fresh) {
+      unawaited(
+        service.show(
+          id: stableNotificationId(n.id),
+          title: n.title,
+          body: n.body,
+          channel: switch (n.kind) {
+            AppNotificationKind.message => NotificationChannel.messages,
+            AppNotificationKind.mission => NotificationChannel.missions,
+            _ => NotificationChannel.alertes,
+          },
+          payload: NotificationPayload(
+            route: n.route ?? AppRoutes.notifications,
+            userId: userId,
+          ),
+        ),
+      );
+    }
   }
 
   void _set(List<AppNotification> items) {
-    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    state = List.unmodifiable(items.take(maxItems));
+    state = mergeNotifications(items, const []);
+    unawaited(_persist());
+  }
+
+  /// Enregistrements en file : chacun fusionne l'état courant avec
+  /// l'historique enregistré, puis reprend ce que l'autre isolat a ajouté.
+  Future<void> _persist() {
     final driverId = _driverId;
-    if (driverId != null) {
-      unawaited(ref.read(notificationStoreProvider).write(driverId, state));
+    if (driverId == null) return _persisting;
+    return _persisting = _persisting.then((_) async {
+      if (!ref.mounted || _driverId != driverId) return;
+      try {
+        final stored = await ref
+            .read(notificationStoreProvider)
+            .merge(driverId, state);
+        if (!ref.mounted || _driverId != driverId) return;
+        final merged = mergeNotifications(state, stored);
+        if (!_sameItems(merged, state)) state = merged;
+      } on Object catch (e) {
+        // La file doit rester utilisable après un échec.
+        AppLogger.warning('Notifications', 'Enregistrement impossible', e);
+      }
+    });
+  }
+
+  static bool _sameItems(List<AppNotification> a, List<AppNotification> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id || a[i].read != b[i].read) return false;
     }
+    return true;
   }
 }

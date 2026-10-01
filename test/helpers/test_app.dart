@@ -7,6 +7,7 @@ import 'package:parkauto/core/api/dio_factory.dart';
 import 'package:parkauto/core/auth/session.dart';
 import 'package:parkauto/core/auth/session_controller.dart';
 import 'package:parkauto/core/auth/session_store.dart';
+import 'package:parkauto/core/auth/token_refresher.dart';
 import 'package:parkauto/core/network/network_status.dart';
 import 'package:parkauto/core/notifications/local_notification_service.dart';
 import 'package:parkauto/core/notifications/notification_payload.dart';
@@ -63,8 +64,18 @@ class InMemorySessionStore implements SessionStore {
 }
 
 class FakeLocalNotifications implements LocalNotificationService {
+  /// Notifications actuellement dans la barre système (une par id).
   final shown =
-      <({int id, String title, String body, NotificationPayload payload})>[];
+      <
+        ({
+          int id,
+          String title,
+          String body,
+          NotificationChannel channel,
+          NotificationPayload payload,
+        })
+      >[];
+  final cancelled = <int>[];
   final _taps = StreamController<NotificationPayload>.broadcast();
 
   @override
@@ -74,15 +85,35 @@ class FakeLocalNotifications implements LocalNotificationService {
   Future<bool> requestPermission() async => true;
 
   @override
-  Future<void> showMessage({
+  Future<void> show({
     required int id,
     required String title,
     required String body,
+    required NotificationChannel channel,
     required NotificationPayload payload,
-  }) async => shown.add((id: id, title: title, body: body, payload: payload));
+  }) async {
+    shown
+      ..removeWhere((n) => n.id == id)
+      ..add((
+        id: id,
+        title: title,
+        body: body,
+        channel: channel,
+        payload: payload,
+      ));
+  }
+
+  @override
+  Future<void> cancel(int id) async {
+    cancelled.add(id);
+    shown.removeWhere((n) => n.id == id);
+  }
 
   @override
   Stream<NotificationPayload> get taps => _taps.stream;
+
+  /// Simule le toucher d'une notification système.
+  void tap(NotificationPayload payload) => _taps.add(payload);
 
   @override
   NotificationPayload? takeLaunchPayload() => null;
@@ -154,6 +185,9 @@ List<Override> testOverrides({
     (connector ?? FakeRealtimeConnector()).call,
   ),
   connectivityProvider.overrideWith((ref) => Stream.value(true)),
+  tokenRefresherProvider.overrideWith(
+    (ref) => TokenRefresher(ref, concurrentRefreshGrace: Duration.zero),
+  ),
 ];
 
 /// Conteneur de test (retry désactivé) avec une session éventuelle déjà
@@ -161,6 +195,7 @@ List<Override> testOverrides({
 Future<ProviderContainer> createContainer({
   required FakeBackend backend,
   Session? session,
+  SessionStore? store,
   LocalNotificationService? notifications,
   FakeRealtimeConnector? connector,
   List<Override> overrides = const [],
@@ -172,7 +207,7 @@ Future<ProviderContainer> createContainer({
     overrides: [
       ...testOverrides(
         backend: backend,
-        store: InMemorySessionStore(session),
+        store: store ?? InMemorySessionStore(session),
         notifications: notifications,
         connector: connector,
       ),

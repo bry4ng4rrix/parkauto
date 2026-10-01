@@ -35,7 +35,7 @@ Future<void> showQuickActionsSheet(BuildContext context) =>
               ),
               _ActionTile(
                 icon: Icons.local_gas_station_rounded,
-                title: 'Un plein de carburant',
+                title: 'Réapprovisionnement de carburant',
                 subtitle: 'Plein complet, appoint ou bidon',
                 onTap: () => open(AppRoutes.fuelNew),
               ),

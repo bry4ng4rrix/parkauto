@@ -179,7 +179,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
     unawaited(ref.read(vehicleProvider.notifier).refresh());
     unawaited(ref.read(moiProvider.notifier).refresh());
     if (!mounted) return;
-    showSuccessMessage(context, 'Plein enregistré');
+    showSuccessMessage(context, 'Réapprovisionnement enregistré');
     Navigator.of(context).pop();
   }
 
@@ -207,7 +207,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
     return PopScope(
       canPop: !_submitting,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Déclarer un plein')),
+        appBar: AppBar(title: const Text('Réapprovisionnement de carburant')),
         body: Form(
           key: _formKey,
           child: ListView(
@@ -262,7 +262,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
                       inputFormatters: DecimalInput.formatters,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'Kilométrage au plein',
+                        labelText: 'Kilométrage au compteur',
                         suffixText: 'km',
                         prefixIcon: const Icon(Icons.speed_rounded),
                         helperText: vehicleKm == null
@@ -329,7 +329,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
                       padding: EdgeInsets.zero,
                       child: ListTile(
                         leading: const Icon(Icons.schedule_rounded),
-                        title: const Text('Date et heure du plein'),
+                        title: const Text('Date et heure'),
                         subtitle: Text(switch (draft.dateHeure) {
                           null => 'Maintenant',
                           final date => AppFormat.dateTime(date),
@@ -354,7 +354,7 @@ class _FuelCreateScreenState extends ConsumerState<FuelCreateScreen> {
                     ),
                     AppSpacing.gapXxl,
                     SubmitButton(
-                      label: 'Enregistrer le plein',
+                      label: 'Enregistrer',
                       icon: Icons.check_rounded,
                       loading: _submitting,
                       onPressed: _submit,

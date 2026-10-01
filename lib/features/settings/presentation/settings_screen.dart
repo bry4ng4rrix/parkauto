@@ -73,9 +73,10 @@ class SettingsScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Les nouveaux messages sont signalés dans '
-                        "l'application et, pendant quelques minutes après "
-                        'sa mise en arrière-plan, par une notification.',
+                        'Messages, missions, incidents et échéances sont '
+                        'signalés par des notifications du téléphone. App '
+                        'fermée, Android vérifie environ toutes les 15 '
+                        'minutes.',
                         style: theme.textTheme.bodyMedium,
                       ),
                       AppSpacing.gapMd,

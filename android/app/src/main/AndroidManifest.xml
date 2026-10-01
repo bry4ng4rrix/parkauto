@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Notifications système (Android 13+ : demandée après la connexion). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Ajoutées par open_filex mais inutiles : les pièces jointes sont
          enregistrées dans le dossier privé de l'application. -->

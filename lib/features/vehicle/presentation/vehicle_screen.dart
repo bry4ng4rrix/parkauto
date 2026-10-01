@@ -204,14 +204,14 @@ class _VehicleDetails extends StatelessWidget {
           ],
         AppSpacing.gapXxl,
         SectionHeader(
-          title: 'Dernier plein',
+          title: 'Dernier réapprovisionnement',
           actionLabel: 'Historique',
           onAction: () => context.push(AppRoutes.fuel),
         ),
         if (dernierPlein == null)
           const _EmptyLine(
             icon: Icons.local_gas_station_outlined,
-            text: 'Aucun plein enregistré',
+            text: 'Aucun réapprovisionnement enregistré',
           )
         else
           AppCard(

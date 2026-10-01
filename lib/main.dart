@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/app.dart';
+import 'app/background/background_scheduler.dart';
 import 'core/auth/session_controller.dart';
 import 'core/auth/session_store.dart';
 import 'core/logging/app_logger.dart';
@@ -38,6 +39,10 @@ Future<void> main() async {
   );
   final notifications = PluginLocalNotificationService();
   await notifications.initialize();
+  // Vérification périodique app fermée (Android) : notifications système
+  // même sans push serveur.
+  final backgroundScheduler = createBackgroundScheduler();
+  await backgroundScheduler.initialize();
 
   runApp(
     ProviderScope(
@@ -48,6 +53,7 @@ Future<void> main() async {
         preferencesProvider.overrideWithValue(prefs),
         sessionStoreProvider.overrideWithValue(sessionStore),
         localNotificationServiceProvider.overrideWithValue(notifications),
+        backgroundSchedulerProvider.overrideWithValue(backgroundScheduler),
         initialThemeModeProvider.overrideWithValue(themeMode),
       ],
       child: const ParkAutoApp(),

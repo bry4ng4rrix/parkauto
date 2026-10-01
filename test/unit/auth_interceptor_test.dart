@@ -275,4 +275,68 @@ void main() {
     expect(container.read(sessionControllerProvider).session, isNull);
     expect(backend.calls('GET', ApiEndpoints.moi), isEmpty);
   });
+
+  group('jetons renouvelés par la vérification en arrière-plan', () {
+    FakeReply moi(RecordedRequest r) => r.authorization == 'Bearer access-2'
+        ? const FakeReply.json(200, {'ok': true})
+        : FakeReply.json(401, _unauthorized());
+
+    test(
+      'session enregistrée plus récente : reprise sans rafraîchir',
+      () async {
+        final store = InMemorySessionStore(testSession());
+        final container = await createContainer(backend: backend, store: store);
+        store.session = testSession(access: 'access-2', refresh: 'refresh-2');
+        backend
+          ..json(
+            'POST',
+            ApiEndpoints.rafraichir,
+            401,
+            Contract.response('Rafraîchir les jetons', '401'),
+          )
+          ..on('GET', ApiEndpoints.moi, moi);
+
+        final result = await container
+            .read(apiClientProvider)
+            .get(ApiEndpoints.moi, _identity);
+
+        expect(result, {'ok': true});
+        expect(backend.calls('POST', ApiEndpoints.rafraichir), isEmpty);
+        expect(
+          container.read(sessionControllerProvider).session?.jetonAcces,
+          'access-2',
+        );
+      },
+    );
+
+    test(
+      'refus dû à un renouvellement concurrent : pas de déconnexion',
+      () async {
+        final store = InMemorySessionStore(testSession());
+        final container = await createContainer(backend: backend, store: store);
+        backend
+          ..on('POST', ApiEndpoints.rafraichir, (_) {
+            // L'autre isolat a consommé le même jeton juste avant.
+            store.session = testSession(
+              access: 'access-2',
+              refresh: 'refresh-2',
+            );
+            return FakeReply.json(
+              401,
+              Contract.response('Rafraîchir les jetons', '401'),
+            );
+          })
+          ..on('GET', ApiEndpoints.moi, moi);
+
+        final result = await container
+            .read(apiClientProvider)
+            .get(ApiEndpoints.moi, _identity);
+
+        expect(result, {'ok': true});
+        final state = container.read(sessionControllerProvider);
+        expect(state.status, AuthStatus.authenticated);
+        expect(state.session?.jetonRafraichissement, 'refresh-2');
+      },
+    );
+  });
 }
