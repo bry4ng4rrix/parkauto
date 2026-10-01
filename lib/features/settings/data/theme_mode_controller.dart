@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/storage/preferences.dart';
 
-/// Thème lu au démarrage (surchargé dans `main`).
-final initialThemeModeProvider = Provider<ThemeMode>((ref) => ThemeMode.system);
+/// Thème lu au démarrage (surchargé dans `main`). Sombre par défaut, comme
+/// l'application Maintenance.
+final initialThemeModeProvider = Provider<ThemeMode>((ref) => ThemeMode.dark);
 
 final themeModeProvider = NotifierProvider<ThemeModeController, ThemeMode>(
   ThemeModeController.new,
@@ -23,6 +24,6 @@ class ThemeModeController extends Notifier<ThemeMode> {
 
   static ThemeMode parse(String? value) => ThemeMode.values.firstWhere(
     (mode) => mode.name == value,
-    orElse: () => ThemeMode.system,
+    orElse: () => ThemeMode.dark,
   );
 }

@@ -42,9 +42,9 @@ class SettingsScreen extends ConsumerWidget {
                       SegmentedButton<ThemeMode>(
                         segments: const [
                           ButtonSegment(
-                            value: ThemeMode.system,
-                            label: Text('Système'),
-                            icon: Icon(Icons.brightness_auto_rounded),
+                            value: ThemeMode.dark,
+                            label: Text('Sombre'),
+                            icon: Icon(Icons.dark_mode_rounded),
                           ),
                           ButtonSegment(
                             value: ThemeMode.light,
@@ -52,9 +52,9 @@ class SettingsScreen extends ConsumerWidget {
                             icon: Icon(Icons.light_mode_rounded),
                           ),
                           ButtonSegment(
-                            value: ThemeMode.dark,
-                            label: Text('Sombre'),
-                            icon: Icon(Icons.dark_mode_rounded),
+                            value: ThemeMode.system,
+                            label: Text('Système'),
+                            icon: Icon(Icons.brightness_auto_rounded),
                           ),
                         ],
                         selected: {themeMode},

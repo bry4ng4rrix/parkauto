@@ -42,7 +42,7 @@ Future<ProviderContainer> pumpScreen(
     UncontrolledProviderScope(
       container: container,
       child: MaterialApp.router(
-        theme: AppTheme.light(),
+        theme: AppTheme.sombre(),
         locale: const Locale('fr'),
         supportedLocales: const [Locale('fr')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>ParkAuto</string>
+	<string>Conducteur</string>
 	<key>NSCameraUsageDescription</key>
 	<string>L'appareil photo permet de joindre des photos à vos déclarations d'incident et à vos messages.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

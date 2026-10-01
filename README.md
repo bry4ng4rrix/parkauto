@@ -18,7 +18,7 @@ flutter build apk --release --dart-define-from-file=env/prod.json
 | Variable       | Obligatoire | Exemple                      |
 |----------------|-------------|------------------------------|
 | `APP_ENV`      | non         | `DEV`, `STAGING`, `PRODUCTION` |
-| `API_BASE_URL` | oui         | `http://192.168.88.20:8080`  |
+| `API_BASE_URL` | oui         | `http://157.173.103.147:8088`  |
 | `WS_BASE_URL`  | non         | dérivée de `API_BASE_URL` (`http`→`ws`, `https`→`wss`) |
 
 `env/dev.json` est versionné. Copier `env/staging.example.json` /

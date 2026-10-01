@@ -11,12 +11,12 @@ import 'theme/app_theme.dart';
 class ParkAutoApp extends ConsumerWidget {
   const ParkAutoApp({super.key});
 
-  static final _light = AppTheme.light();
-  static final _dark = AppTheme.dark();
+  static final _light = AppTheme.clair();
+  static final _dark = AppTheme.sombre();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
-    title: 'ParkAuto',
+    title: 'Conducteur',
     debugShowCheckedModeBanner: false,
     theme: _light,
     darkTheme: _dark,

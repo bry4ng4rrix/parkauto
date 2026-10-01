@@ -31,7 +31,11 @@ void _show(ScaffoldMessengerState? messenger, String message, IconData icon) {
       SnackBar(
         content: Row(
           children: [
-            Icon(icon, size: 20, color: Colors.white70),
+            Icon(
+              icon,
+              size: 20,
+              color: Theme.of(messenger.context).colorScheme.onInverseSurface,
+            ),
             const SizedBox(width: 12),
             Expanded(child: Text(message)),
           ],

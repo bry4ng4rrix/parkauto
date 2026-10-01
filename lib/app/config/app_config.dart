@@ -41,7 +41,7 @@ class AppConfig {
     const env = String.fromEnvironment('APP_ENV', defaultValue: 'DEV');
     const api = String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://192.168.88.20:8080',
+      defaultValue: 'http://157.173.103.147:8088',
     );
     const ws = String.fromEnvironment('WS_BASE_URL');
     final apiBaseUrl = _trimTrailingSlash(api);
@@ -56,10 +56,10 @@ class AppConfig {
 
   final AppEnvironment environment;
 
-  /// Ex. `http://192.168.88.20:8080`.
+  /// Ex. `http://157.173.103.147:8088`.
   final String apiBaseUrl;
 
-  /// Ex. `ws://192.168.88.20:8080` (dérivée de [apiBaseUrl] par défaut).
+  /// Ex. `ws://157.173.103.147:8088` (dérivée de [apiBaseUrl] par défaut).
   final String wsBaseUrl;
 
   /// Valeur envoyée dans le champ `appareil` de la connexion.

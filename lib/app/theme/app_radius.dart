@@ -1,10 +1,17 @@
 import 'package:flutter/widgets.dart';
 
-/// Coins légèrement arrondis.
+/// Rayons alignés sur l'application Maintenance.
 abstract final class AppRadius {
+  /// Badges, puces.
   static const double sm = 8;
-  static const double md = 12;
-  static const double lg = 16;
+
+  /// Champs et boutons.
+  static const double md = 10;
+
+  /// Cartes.
+  static const double lg = 14;
+
+  /// Feuilles et dialogues.
   static const double xl = 20;
   static const double pill = 999;
 
